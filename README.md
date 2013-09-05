@@ -15,8 +15,9 @@ state1.on("event1", function () {
   this.goto("state2");
 });
 
-state1.on("event2", function () {
+state1.on("event2", function (x, y, z) {
   // do something
+  console.log("x:", x, "y:" y, "z:", z);
 });
 
 state1.on("enter", function () {
@@ -37,7 +38,7 @@ ssm.initialize("state1");
 
 // invoke events
 ssm.event1();
-ssm.event2();
+ssm.event2("foo", "bar", "baz");
 
 ```
 

@@ -120,4 +120,17 @@ describe("SSM", function () {
     ssm.event1();
   });
 
+  it("should recieve parameters from event invokations", function (done) {
+    var ssm = new SSM();
+    ssm.state("state1").on("event1", function (arg1, arg2) {
+      if (arg1 !== "foo" || arg2 !== "bar") {
+        throw new Error("parameters were not passed correctly");
+      } else {
+        done();
+      }
+    })
+    ssm.initialize("state1");
+    ssm.event1("foo", "bar");
+  });
+
 });
