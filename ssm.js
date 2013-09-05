@@ -19,7 +19,7 @@ var SSM = (function () {
     return function () {
       var state = sm._current,
           events;
-      if (state == null) {
+      if (state === null) {
         throw new Error("the state machine has not been initialized");
       }
       events = state._events;
