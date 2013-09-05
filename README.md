@@ -17,7 +17,7 @@ state1.on("event1", function () {
 
 state1.on("event2", function (x, y, z) {
   // do something
-  console.log("x:", x, "y:" y, "z:", z);
+  console.log("x:", x, "y:", y, "z:", z);
 });
 
 state1.on("enter", function () {
