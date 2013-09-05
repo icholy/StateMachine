@@ -159,6 +159,22 @@ var SSM = (function () {
     return states[name];
   };
 
+
+  /**
+   * Gets the name of the current State
+   *
+   * @method current
+   * @return {String} name - current state name
+   */
+  SSM.prototype.current = function () {
+    if (this._current === null) {
+      throw new Error(
+        "the state machine has not been initialized"
+      );
+    }
+    return this._current._name;
+  };
+
   /**
    * Go to another state
    *

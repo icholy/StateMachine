@@ -133,4 +133,17 @@ describe("SSM", function () {
     ssm.event1("foo", "bar");
   });
 
+  it("should return the correct current state name", function () {
+    var ssm = new SSM();
+    ssm.state("state1").on("event1", function () {
+      this.goto("state2");
+    });
+    ssm.state("state2");
+    ssm.initialize("state1");
+    ssm.event1();
+    if (ssm.current() !== "state2") {
+      throw "incorrect state";
+    }
+  });
+
 });
