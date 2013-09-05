@@ -88,4 +88,22 @@ describe("SSM", function () {
     ssm.event1();
   });
 
+  it("should not invoke the enter event if the state didn't actually change", function () {
+    var ssm = new SSM();
+    ssm.state("state1").on("enter", function () {
+      throw "state did not change";
+    });
+    ssm.initialize("state1");
+    ssm.goto("state1");
+  });
+
+  it("should not invoke the exit event if the state didn't actually change", function () {
+    var ssm = new SSM();
+    ssm.state("state1").on("exit", function () {
+      throw "state did not change";
+    });
+    ssm.initialize("state1");
+    ssm.goto("state1");
+  });
+
 });
