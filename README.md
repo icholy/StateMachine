@@ -40,6 +40,10 @@ ssm.initialize("state1");
 ssm.event1();
 ssm.event2("foo", "bar", "baz");
 
+//get current state name
+var name = ssm.current();
+console.log(name);
+
 ```
 
 **Note:** the api is completely chainable
