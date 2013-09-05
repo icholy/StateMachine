@@ -35,7 +35,7 @@ var SSM = (function () {
           event + " event not defined for " + state._name + " state"
         );
       }
-      events[event].call(sm);
+      events[event].apply(sm, arguments);
       return sm;
     };
   };
