@@ -2,7 +2,6 @@
 
 **Usage:**
 
-
 ``` js
 
 // create instance
@@ -41,3 +40,5 @@ ssm.event1();
 ssm.event2();
 
 ```
+
+**Note:** the api is completely chainable
