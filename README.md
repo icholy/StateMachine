@@ -8,7 +8,7 @@
 var ssm = new SSM();
 
 // define states
-var state1 = ssm.state("state1")
+var state1 = ssm.state("state1");
 
 state1.on("event1", function () {
   // do something

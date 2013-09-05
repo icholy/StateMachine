@@ -6,6 +6,13 @@ var SSM = (function () {
   var isDefined   = function (x) { return typeof x !== "undefined"; },
       isUndefined = function (x) { return !isDefined(x); }
 
+  /**
+   * a single state
+   *
+   * @class State
+   * @param {SSM} sm - state machine
+   * @param {String} name - state name
+   */
   var State = function (sm, name) {
     this._sm     = sm;
     this._name   = name;
@@ -33,6 +40,22 @@ var SSM = (function () {
     };
   };
 
+  /**
+   * register a state event and add the event method
+   * to the state machine instance
+   *
+   * Note:
+   *
+   *  `enter` and `exit` are special events.
+   *  event methods do not get defined for them.
+   *  they are executed when the state machine is
+   *  entering or exiting that state.
+   *
+   * @method on
+   * @param {String} event - event name
+   * @param {Function} fn - event callback function
+   * @return {State} state 
+   */
   State.prototype.on = function (event, fn) {
     var events = this._events,
         sm     = this._sm;
@@ -40,7 +63,7 @@ var SSM = (function () {
       case "enter":
         if (this._enter !== null) {
           throw new Error(
-            "enter event already defined for " + this._name + "state"
+            "enter event already defined for " + this._name + " state"
           );
         }
         this._enter = fn;
@@ -48,7 +71,7 @@ var SSM = (function () {
       case "exit":
         if (this._exit !== null) {
           throw new Error(
-            "exit event already defined for " + this._name + "state"
+            "exit event already defined for " + this._name + " state"
           );
         }
         this._exit = fn;
@@ -71,19 +94,47 @@ var SSM = (function () {
     return this;
   };
 
+  /**
+   * See SSM#initialize method
+   *
+   * @method initialize
+   * @param {String} name - initial state name
+   * @return {SSM} state machine
+   */
   State.prototype.initialize = function (name) {
     return this._sm.initialize(name);
   };
 
+  /**
+   * See SSM#state method
+   *
+   * @method state
+   * @param {String} name - state name
+   * @return {State} state specified by name parameter
+   */
   State.prototype.state = function (name) {
     return this._sm.state(name);
   };
 
+  /**
+   * Shitty State Machine
+   *
+   * @class SSM
+   */
   var SSM = function () {
     this._states  = {};
     this._current = null;
   };
 
+  /**
+   * Initializes the state machine to an initial state.
+   * trying to invoke event methods before initializing
+   * will result in an `Error` being thrown
+   *
+   * @method initialize
+   * @param {String} name - initial state name
+   * @return {SSM} state machine
+   */
   SSM.prototype.initialize = function (name) {
     var states = this._states;
     if (isUndefined(states[name])) {
@@ -93,6 +144,13 @@ var SSM = (function () {
     return this;
   };
 
+  /**
+   * Creates or gets existing State
+   *
+   * @method state
+   * @param {String} name - state name
+   * @return {State} state specified by name
+   */
   SSM.prototype.state = function (name) {
     var states = this._states;
     if (isUndefined(states[name])) {
@@ -101,6 +159,13 @@ var SSM = (function () {
     return states[name];
   };
 
+  /**
+   * Go to another state
+   *
+   * @method goto
+   * @param {String} name - state to transition to
+   * @return {SSM} state machine
+   */
   SSM.prototype.goto = function (name) {
     var states = this._states,
         state  = states[name],
@@ -117,6 +182,7 @@ var SSM = (function () {
         state._enter.call(this._sm);
       }
     }
+    return this;
   };
 
   return SSM;
