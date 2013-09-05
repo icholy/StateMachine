@@ -76,8 +76,11 @@ var FSM = (function () {
     this._current = events[name];
   };
 
+  if (isDefined(module)) {
+    module.exports = FSM;
+  }
+
   return FSM;
 
 }).call(this);
-
 
