@@ -75,11 +75,11 @@ var SSM = (function () {
     this._current = states[name];
   };
 
-  if (isDefined(module)) {
-    module.exports = SSM;
-  }
 
   return SSM;
 
 }).call(this);
 
+if (typeof module !== "undefined") {
+  module.exports = SSM;
+}
