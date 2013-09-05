@@ -68,12 +68,11 @@ var FSM = (function () {
   };
 
   FSM.prototype.goto = function (name) {
-    var state  = this._current,
-        events = state._events;
-    if (isUndefined(events[name])) {
-      throw new Error("no transition from " + state._name + " to " + name);
+    var states = this._states;
+    if (isUndefined(states[name])) {
+      throw new Error(name + " state does not exist");
     }
-    this._current = events[name];
+    this._current = states[name];
   };
 
   if (isDefined(module)) {
