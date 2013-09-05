@@ -6,16 +6,16 @@ var SSM = (function () {
   var isDefined   = function (x) { return typeof x !== "undefined"; },
       isUndefined = function (x) { return !isDefined(x); }
 
-  var State = function (fsm, name) {
-    this._sm    = fsm;
+  var State = function (sm, name) {
+    this._sm    = sm;
     this._name   = name;
     this._events = {};
   };
 
   State.prototype._makeEventFn = function (event) {
-    var fsm = this._sm;
+    var sm = this._sm;
     return function () {
-      var state  = fsm._current,
+      var state  = sm._current,
           events = state._events;
       if (state == null) {
         throw new Error("the state machine has not been initialized");
@@ -25,13 +25,13 @@ var SSM = (function () {
           event + " event not defined for " + state._name + " state"
         );
       }
-      events[event].call(fsm);
+      events[event].call(sm);
     };
   };
 
   State.prototype.on = function (event, fn) {
     var events = this._events,
-        fsm    = this._sm;
+        sm    = this._sm;
     if (reserved.indexOf(event) !== -1) {
       throw new Error(event + " method is reserved for the api");
     };
@@ -41,8 +41,8 @@ var SSM = (function () {
       );
     }
     events[event] = fn;
-    if (isUndefined(fsm[event])) {
-      fsm[event] = this._makeEventFn(event);
+    if (isUndefined(sm[event])) {
+      sm[event] = this._makeEventFn(event);
     }
   };
 
