@@ -43,7 +43,7 @@ var SSM = (function () {
           );
         }
         this._enter = fn;
-        return this;
+        break;
       case "exit":
         if (this._exit !== null) {
           throw new Error(
@@ -51,7 +51,7 @@ var SSM = (function () {
           );
         }
         this._exit = fn;
-        return this;
+        break;
       default:
         if (reserved.indexOf(event) !== -1) {
           throw new Error(event + " method is reserved for the api");
@@ -65,9 +65,17 @@ var SSM = (function () {
         if (isUndefined(sm[event])) {
           sm[event] = this._makeEventFn(event);
         }
-        return this;
+        break;
     }
-    throw "unreachable";
+    return this;
+  };
+
+  State.prototype.initialize = function (name) {
+    return this._sm.initialize(name);
+  };
+
+  State.prototype.state = function (name) {
+    return this._sm.state(name);
   };
 
   var SSM = function () {
@@ -81,6 +89,7 @@ var SSM = (function () {
       throw new Error(name + " state is not defined");
     }
     this._current = states[name];
+    return this;
   };
 
   SSM.prototype.state = function (name) {

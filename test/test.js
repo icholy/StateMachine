@@ -106,4 +106,18 @@ describe("SSM", function () {
     ssm.goto("state1");
   });
 
+  it("should be chainable", function (done) {
+    var ssm = new SSM()
+        .state("state1")
+          .on("event1", function () {
+            this.goto("state2");
+          })
+          .on("exit", function () { })
+        .state("state2")
+          .on("enter", done)
+        .initialize("state1");
+
+    ssm.event1();
+  });
+
 });
