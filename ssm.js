@@ -29,6 +29,7 @@ var SSM = (function () {
         );
       }
       events[event].call(sm);
+      return sm;
     };
   };
 
