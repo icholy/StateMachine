@@ -8,6 +8,7 @@
   },
   "author": "Ilia Choly",
   "license": "MIT",
+  "repository": "https://github.com/icholy/SSM.git",
   "devDependencies": {
     "mocha": "~1.12.1"
   }
