@@ -1,0 +1,14 @@
+{
+  "name": "jsfsm",
+  "version": "0.0.0",
+  "description": "crappy state machine",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "author": "Ilia Choly",
+  "license": "MIT",
+  "devDependencies": {
+    "mocha": "~1.12.1"
+  }
+}
