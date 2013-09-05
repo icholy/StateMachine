@@ -7,7 +7,7 @@ var SSM = (function () {
       isUndefined = function (x) { return !isDefined(x); }
 
   var State = function (sm, name) {
-    this._sm    = sm;
+    this._sm     = sm;
     this._name   = name;
     this._events = {};
   };
@@ -31,7 +31,7 @@ var SSM = (function () {
 
   State.prototype.on = function (event, fn) {
     var events = this._events,
-        sm    = this._sm;
+        sm     = this._sm;
     if (reserved.indexOf(event) !== -1) {
       throw new Error(event + " method is reserved for the api");
     };
