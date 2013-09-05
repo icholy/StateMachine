@@ -28,9 +28,6 @@ var SSM = (function () {
           event + " event not defined for " + state._name + " state"
         );
       }
-      if (state._exit !== null) {
-        state._exit.call(sm);
-      }
       events[event].call(sm);
     };
   };
@@ -40,11 +37,12 @@ var SSM = (function () {
         sm     = this._sm;
     switch (event) {
       case "enter":
-        if (this._exit !== null) {
+        if (this._enter !== null) {
           throw new Error(
             "enter event already defined for " + this._name + "state"
           );
         }
+        this._enter = fn;
         return this;
       case "exit":
         if (this._exit !== null) {
@@ -52,6 +50,7 @@ var SSM = (function () {
             "exit event already defined for " + this._name + "state"
           );
         }
+        this._exit = fn;
         return this;
       default:
         if (reserved.indexOf(event) !== -1) {
@@ -94,16 +93,21 @@ var SSM = (function () {
 
   SSM.prototype.goto = function (name) {
     var states = this._states,
-        state  = states[name];
+        state  = states[name],
+        isNew;
     if (isUndefined(state)) {
       throw new Error(name + " state does not exist");
     }
-    this._current = state;
-    if (state._enter !== null) {
-      state._enter.call(this._sm);
+    if (this._current._name !== name) {
+      if (this._current._exit !== null) {
+        this._current._exit.call(this._sm);
+      }
+      this._current = state;
+      if (state._enter !== null) {
+        state._enter.call(this._sm);
+      }
     }
   };
-
 
   return SSM;
 

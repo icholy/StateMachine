@@ -71,4 +71,21 @@ describe("SSM", function () {
     }
   });
 
+  it("should invoke the enter event when entering a state", function (done) {
+    var ssm = new SSM();
+    ssm.state("state1").on("event1", function () { this.goto("state2"); });
+    ssm.state("state2").on("enter", done);
+    ssm.initialize("state1");
+    ssm.event1();
+  });
+
+  it("should invoke the exit event when entering a state", function (done) {
+    var ssm = new SSM();
+    ssm.state("state1").on("event1", function () { this.goto("state2"); });
+    ssm.state("state1").on("exit", done);
+    ssm.state("state2").on("enter", function () {});
+    ssm.initialize("state1");
+    ssm.event1();
+  });
+
 });
