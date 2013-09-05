@@ -15,11 +15,12 @@ var SSM = (function () {
   State.prototype._makeEventFn = function (event) {
     var sm = this._sm;
     return function () {
-      var state  = sm._current,
-          events = state._events;
+      var state = sm._current,
+          events;
       if (state == null) {
         throw new Error("the state machine has not been initialized");
       }
+      events = state._events;
       if (isUndefined(events[event])) {
         throw new Error(
           event + " event not defined for " + state._name + " state"
