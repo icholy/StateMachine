@@ -1,5 +1,5 @@
 
-var FSM = (function () {
+var SSM = (function () {
 
   var reserved = ["state", "goto", "initialize"];
 
@@ -7,13 +7,13 @@ var FSM = (function () {
       isUndefined = function (x) { return !isDefined(x); }
 
   var State = function (fsm, name) {
-    this._fsm    = fsm;
+    this._sm    = fsm;
     this._name   = name;
     this._events = {};
   };
 
   State.prototype._makeEventFn = function (event) {
-    var fsm = this._fsm;
+    var fsm = this._sm;
     return function () {
       var state  = fsm._current,
           events = state._events;
@@ -31,7 +31,7 @@ var FSM = (function () {
 
   State.prototype.on = function (event, fn) {
     var events = this._events,
-        fsm    = this._fsm;
+        fsm    = this._sm;
     if (reserved.indexOf(event) !== -1) {
       throw new Error(event + " method is reserved for the api");
     };
@@ -46,12 +46,12 @@ var FSM = (function () {
     }
   };
 
-  var FSM = function () {
+  var SSM = function () {
     this._states  = {};
     this._current = null;
   };
 
-  FSM.prototype.initialize = function (name) {
+  SSM.prototype.initialize = function (name) {
     var states = this._states;
     if (isUndefined(states[name])) {
       throw new Error(name + " state is not defined");
@@ -59,7 +59,7 @@ var FSM = (function () {
     this._current = states[name];
   };
 
-  FSM.prototype.state = function (name) {
+  SSM.prototype.state = function (name) {
     var states = this._states;
     if (isUndefined(states[name])) {
       states[name] = new State(this, name);
@@ -67,7 +67,7 @@ var FSM = (function () {
     return states[name];
   };
 
-  FSM.prototype.goto = function (name) {
+  SSM.prototype.goto = function (name) {
     var states = this._states;
     if (isUndefined(states[name])) {
       throw new Error(name + " state does not exist");
@@ -76,10 +76,10 @@ var FSM = (function () {
   };
 
   if (isDefined(module)) {
-    module.exports = FSM;
+    module.exports = SSM;
   }
 
-  return FSM;
+  return SSM;
 
 }).call(this);
 
