@@ -10,6 +10,8 @@ var SSM = (function () {
     this._sm     = sm;
     this._name   = name;
     this._events = {};
+    this._enter  = null;
+    this._exit   = null;
   };
 
   State.prototype._makeEventFn = function (event) {
@@ -25,6 +27,9 @@ var SSM = (function () {
         throw new Error(
           event + " event not defined for " + state._name + " state"
         );
+      }
+      if (state._exit !== null) {
+        state._exit.call(sm);
       }
       events[event].call(sm);
     };
@@ -45,6 +50,25 @@ var SSM = (function () {
     if (isUndefined(sm[event])) {
       sm[event] = this._makeEventFn(event);
     }
+    return this;
+  };
+
+  State.prototype.enter = function (fn) {
+    if (this._enter !== null) {
+      throw new Error(
+        "enter event already defined for " + this._name + "state"
+      );
+    }
+    this._enter = fn;
+  };
+
+  State.prototype.exit = function (fn) {
+    if (this._exit !== null) {
+      throw new Error(
+        "exit event already defined for " + this._name + "state"
+      );
+    }
+    this._exit = fn;
   };
 
   var SSM = function () {
@@ -69,11 +93,15 @@ var SSM = (function () {
   };
 
   SSM.prototype.goto = function (name) {
-    var states = this._states;
-    if (isUndefined(states[name])) {
+    var states = this._states,
+        state  = states[name];
+    if (isUndefined(state)) {
       throw new Error(name + " state does not exist");
     }
-    this._current = states[name];
+    this._current = state;
+    if (state._enter !== null) {
+      state._enter.call(this._sm);
+    }
   };
 
 
