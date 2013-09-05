@@ -38,37 +38,37 @@ var SSM = (function () {
   State.prototype.on = function (event, fn) {
     var events = this._events,
         sm     = this._sm;
-    if (reserved.indexOf(event) !== -1) {
-      throw new Error(event + " method is reserved for the api");
-    };
-    if (isDefined(events[event])) {
-      throw new Error(
-        event + " event already defined for " + this._name + " state"
-      );
+    switch (event) {
+      case "enter":
+        if (this._exit !== null) {
+          throw new Error(
+            "enter event already defined for " + this._name + "state"
+          );
+        }
+        return this;
+      case "exit":
+        if (this._exit !== null) {
+          throw new Error(
+            "exit event already defined for " + this._name + "state"
+          );
+        }
+        return this;
+      default:
+        if (reserved.indexOf(event) !== -1) {
+          throw new Error(event + " method is reserved for the api");
+        };
+        if (isDefined(events[event])) {
+          throw new Error(
+            event + " event already defined for " + this._name + " state"
+          );
+        }
+        events[event] = fn;
+        if (isUndefined(sm[event])) {
+          sm[event] = this._makeEventFn(event);
+        }
+        return this;
     }
-    events[event] = fn;
-    if (isUndefined(sm[event])) {
-      sm[event] = this._makeEventFn(event);
-    }
-    return this;
-  };
-
-  State.prototype.enter = function (fn) {
-    if (this._enter !== null) {
-      throw new Error(
-        "enter event already defined for " + this._name + "state"
-      );
-    }
-    this._enter = fn;
-  };
-
-  State.prototype.exit = function (fn) {
-    if (this._exit !== null) {
-      throw new Error(
-        "exit event already defined for " + this._name + "state"
-      );
-    }
-    this._exit = fn;
+    throw "unreachable";
   };
 
   var SSM = function () {
