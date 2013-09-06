@@ -22,7 +22,15 @@ var SSM = (function () {
     this._exit   = null;
   };
 
-  State.prototype._makeEventFn = function (event) {
+  /**
+   * create a function for invoking an event
+   *
+   * @method _makeEventMethodFn
+   * @private
+   * @param {String} event - event name
+   * @return {Function}
+   */
+  State.prototype._makeEventMethodFn = function (event) {
     var sm = this._sm;
     return function () {
       var state = sm._current,
@@ -41,7 +49,15 @@ var SSM = (function () {
     };
   };
 
-  State.prototype._makeEventHandler = function (x) {
+  /**
+   * convert an event handler paramter to a function
+   *
+   * @method _makeEventHandlerFn
+   * @private
+   * @param {Function|String|Undefined} x - handler
+   * @return {Function}
+   */
+  State.prototype._makeEventHandlerFn = function (x) {
     var sm = this._sm;
     switch (Object.prototype.toString.call(x)) {
       case '[object Function]' : return x;
@@ -71,7 +87,7 @@ var SSM = (function () {
   State.prototype.on = function (event, handler) {
     var events = this._events,
         sm     = this._sm,
-        fn     = this._makeEventHandler(handler);
+        fn     = this._makeEventHandlerFn(handler);
     switch (event) {
       case "enter":
         if (this._enter !== null) {
@@ -100,7 +116,7 @@ var SSM = (function () {
         }
         events[event] = fn;
         if (isUndefined(sm[event])) {
-          sm[event] = this._makeEventFn(event);
+          sm[event] = this._makeEventMethodFn(event);
         }
         break;
     }
