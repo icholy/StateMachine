@@ -168,12 +168,13 @@ var SSM = (function () {
    * @return {String} name - current state name
    */
   SSM.prototype.current = function () {
-    if (this._current === null) {
+    var current = this._current;
+    if (current === null) {
       throw new Error(
         "the state machine has not been initialized"
       );
     }
-    return this._current._name;
+    return current._name;
   };
 
   /**
@@ -184,14 +185,14 @@ var SSM = (function () {
    * @return {SSM} state machine
    */
   SSM.prototype.goto = function (name) {
-    var states = this._states,
-        state  = states[name];
+    var state   = this._states[name],
+        current = this._current;
     if (isUndefined(state)) {
       throw new Error(name + " state does not exist");
     }
-    if (this._current._name !== name) {
-      if (this._current._exit !== null) {
-        this._current._exit.call(this._sm);
+    if (current._name !== name) {
+      if (current._exit !== null) {
+        current._exit.call(this._sm);
       }
       this._current = state;
       if (state._enter !== null) {
