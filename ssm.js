@@ -41,6 +41,17 @@ var SSM = (function () {
     };
   };
 
+  State.prototype._makeEventHandler = function (fn) {
+    var sm = this._sm;
+    switch (Object.prototype.toString.call(fn)) {
+      case '[object Function]' : return fn;
+      case '[object String]'   : return sm.goto.bind(sm, fn);
+      case '[object Undefined]': return function () {};
+      default:
+        throw new Error("invalid event handler");
+    }
+  };
+
   /**
    * register a state event and add the event method
    * to the state machine instance
@@ -54,12 +65,13 @@ var SSM = (function () {
    *
    * @method on
    * @param {String} event - event name
-   * @param {Function|String} fn - event callback function or state name
+   * @param {Function|String} handler - event callback function or state name
    * @return {State} state 
    */
-  State.prototype.on = function (event, fn) {
+  State.prototype.on = function (event, handler) {
     var events = this._events,
-        sm     = this._sm;
+        sm     = this._sm,
+        fn     = this._makeEventHandler(handler);
     switch (event) {
       case "enter":
         if (this._enter !== null) {
@@ -86,7 +98,7 @@ var SSM = (function () {
             event + " event already defined for " + this._name + " state"
           );
         }
-        events[event] = isFunction(fn) ? fn : sm.goto.bind(sm, fn);
+        events[event] = fn;
         if (isUndefined(sm[event])) {
           sm[event] = this._makeEventFn(event);
         }
