@@ -4,7 +4,8 @@ var SSM = (function () {
   var reserved = ["state", "goto", "initialize", "current"];
 
   var isDefined   = function (x) { return typeof x !== "undefined"; },
-      isUndefined = function (x) { return !isDefined(x); }
+      isUndefined = function (x) { return !isDefined(x); },
+      isFunction  = function (x) { return Object.prototype.toString.call(x) === '[object Function]'; };
 
   /**
    * a single state
@@ -53,7 +54,7 @@ var SSM = (function () {
    *
    * @method on
    * @param {String} event - event name
-   * @param {Function} fn - event callback function
+   * @param {Function|String} fn - event callback function or state name
    * @return {State} state 
    */
   State.prototype.on = function (event, fn) {
@@ -85,7 +86,7 @@ var SSM = (function () {
             event + " event already defined for " + this._name + " state"
           );
         }
-        events[event] = fn;
+        events[event] = isFunction(fn) ? fn : sm.goto.bind(sm, fn);
         if (isUndefined(sm[event])) {
           sm[event] = this._makeEventFn(event);
         }

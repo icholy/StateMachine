@@ -146,4 +146,19 @@ describe("SSM", function () {
     }
   });
 
+  it("should work with the simple transition rules", function () {
+    var ssm = new SSM();
+    ssm.state("state1").on("event1", "state2");
+    ssm.state("state2").on("event1", "state1");
+    ssm.initialize("state1");
+    ssm.event1();
+    if (ssm.current() !== "state2") {
+      throw "incorrect state";
+    }
+    ssm.event1();
+    if (ssm.current() !== "state1") {
+      throw "incorrect state";
+    }
+  });
+
 });
