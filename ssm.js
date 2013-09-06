@@ -4,8 +4,7 @@ var SSM = (function () {
   var reserved = ["state", "goto", "initialize", "current"];
 
   var isDefined   = function (x) { return typeof x !== "undefined"; },
-      isUndefined = function (x) { return !isDefined(x); },
-      isFunction  = function (x) { return Object.prototype.toString.call(x) === '[object Function]'; };
+      isUndefined = function (x) { return !isDefined(x); };
 
   /**
    * a single state
