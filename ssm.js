@@ -185,8 +185,7 @@ var SSM = (function () {
    */
   SSM.prototype.goto = function (name) {
     var states = this._states,
-        state  = states[name],
-        isNew;
+        state  = states[name];
     if (isUndefined(state)) {
       throw new Error(name + " state does not exist");
     }
