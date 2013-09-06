@@ -41,11 +41,11 @@ var SSM = (function () {
     };
   };
 
-  State.prototype._makeEventHandler = function (fn) {
+  State.prototype._makeEventHandler = function (x) {
     var sm = this._sm;
-    switch (Object.prototype.toString.call(fn)) {
-      case '[object Function]' : return fn;
-      case '[object String]'   : return sm.goto.bind(sm, fn);
+    switch (Object.prototype.toString.call(x)) {
+      case '[object Function]' : return x;
+      case '[object String]'   : return sm.goto.bind(sm, x);
       case '[object Undefined]': return function () {};
       default:
         throw new Error("invalid event handler");
