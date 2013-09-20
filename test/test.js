@@ -107,6 +107,26 @@ describe("SSM", function () {
     ssm.goto("state1");
   });
 
+  it("should work with multiple enter events", function (done) {
+    var ssm = new SSM();
+    ssm.state("state2");
+    var callCount = 0;
+    ssm.state("state1").on("enter", function () { ++callCount === 2 && done(); });
+    ssm.state("state1").on("enter", function () { ++callCount === 2 && done(); });
+    ssm.initialize("state2");
+    ssm.goto("state1");
+  });
+
+  it("should work with multiple exit events", function (done) {
+    var ssm = new SSM();
+    ssm.state("state2");
+    var callCount = 0;
+    ssm.state("state1").on("exit", function () { ++callCount === 2 && done(); });
+    ssm.state("state1").on("exit", function () { ++callCount === 2 && done(); });
+    ssm.initialize("state1");
+    ssm.goto("state2");
+  });
+
   it("should be chainable", function (done) {
     var ssm = new SSM()
         .state("state1")
