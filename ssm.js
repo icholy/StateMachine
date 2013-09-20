@@ -49,7 +49,7 @@ var SSM = (function () {
   };
 
   /**
-   * convert an event handler paramter to a function
+   * convert an event handler parameter to a function
    *
    * @method _makeEventHandlerFn
    * @private
