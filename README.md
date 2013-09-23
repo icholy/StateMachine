@@ -1,4 +1,6 @@
-# SSM: Simple State Machine
+# SSM: [![Build Status](https://travis-ci.org/icholy/SSM.png?branch=master)](https://travis-ci.org/icholy/SSM)
+
+> Simple State Machine 
 
 **Usage:**
 
