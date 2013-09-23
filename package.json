@@ -1,7 +1,7 @@
 {
-  "name": "jsfsm",
-  "version": "0.0.0",
-  "description": "crappy state machine",
+  "name": "ssm",
+  "version": "1.0.0",
+  "description": "simple state machine",
   "main": "index.js",
   "scripts": {
     "test": "mocha test/"

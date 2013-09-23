@@ -1,4 +1,4 @@
-# SSM: Shitty State Machine
+# SSM: Simple State Machine
 
 **Usage:**
 

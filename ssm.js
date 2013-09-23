@@ -136,7 +136,7 @@ var SSM = (function () {
   };
 
   /**
-   * Shitty State Machine
+   * Simple State Machine
    *
    * @class SSM
    */
