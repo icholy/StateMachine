@@ -61,15 +61,21 @@ describe("SSM", function () {
     }
   });
 
-  it("should error if trying to redefine the same event on the same state", function (done) {
+  it("should not error if trying to redefine the same event on the same state", function () {
     var ssm   = new SSM(),
         dummy = function () {};
     ssm.state("state1").on("event1", dummy);
-    try {
-      ssm.state("state1").on("event1", dummy);
-    } catch (e) {
-      done();
-    }
+    ssm.state("state1").on("event1", dummy);
+  });
+
+  it("should work with multiple callbacks on the same event", function (done) {
+    var count = 0,
+        ssm   = new SSM(),
+        cb    = function () { if (++count === 2) { done(); } };
+
+    ssm.state("state1").on("event1", cb).on("event1", cb);
+    ssm.initialize("state1");
+    ssm.event1();
   });
 
   it("should invoke the enter event when entering a state", function (done) {

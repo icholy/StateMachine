@@ -33,6 +33,7 @@ var SSM = (function () {
     var sm = this._sm;
     return function () {
       var state = sm._current,
+          args  = arguments,
           events;
       if (state === null) {
         throw new Error("the state machine has not been initialized");
@@ -43,7 +44,9 @@ var SSM = (function () {
           event + " event not defined for " + state._name + " state"
         );
       }
-      events[event].apply(sm, arguments);
+      events[event].forEach(function (fn) {
+        fn.apply(sm, args);
+      });
       return sm;
     };
   };
@@ -98,12 +101,10 @@ var SSM = (function () {
         if (reserved.indexOf(event) !== -1) {
           throw new Error(event + " method is reserved for the api");
         };
-        if (isDefined(events[event])) {
-          throw new Error(
-            event + " event already defined for " + this._name + " state"
-          );
+        if (isUndefined(events[event])) {
+          events[event] = [];
         }
-        events[event] = fn;
+        events[event].push(fn);
         if (isUndefined(sm[event])) {
           sm[event] = this._makeEventMethodFn(event);
         }
