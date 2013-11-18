@@ -14,7 +14,7 @@ var state1 = ssm.state("state1");
 
 state1.on("event1", function () {
   // do something
-  this.goto("state2");
+  this.go("state2");
 });
 
 state1.on("event2", function (x, y, z) {
@@ -29,7 +29,7 @@ state1.on("enter", function () {
 ssm.state("state2")
   .on("event2", function () {
     // do something else
-    this.goto("state1");
+    this.go("state1");
   })
   .on("exit", function () {
     // special event that gets run when the state is exited

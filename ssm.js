@@ -1,7 +1,7 @@
 
 var SSM = (function () {
 
-  var reserved = ["state", "goto", "initialize", "current"];
+  var reserved = ["state", "go", "initialize", "current"];
 
   var isDefined   = function (x) { return typeof x !== "undefined"; },
       isUndefined = function (x) { return !isDefined(x); };
@@ -63,7 +63,7 @@ var SSM = (function () {
     var sm = this._sm;
     switch (Object.prototype.toString.call(x)) {
       case '[object Function]' : return x;
-      case '[object String]'   : return sm.goto.bind(sm, x);
+      case '[object String]'   : return sm.go.bind(sm, x);
       case '[object Undefined]': return function () {};
       default:
         throw new Error("invalid event handler");
@@ -198,11 +198,11 @@ var SSM = (function () {
   /**
    * Go to another state
    *
-   * @method goto
+   * @method go
    * @param {String} name - state to transition to
    * @return {SSM} state machine
    */
-  SSM.prototype.goto = function (name) {
+  SSM.prototype.go = function (name) {
     var state   = this._states[name],
         current = this._current,
         execute = function (fn) { fn.call(this._sm); }.bind(this);

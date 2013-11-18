@@ -12,7 +12,7 @@ describe("SSM", function () {
 
   it("should correctly transition between states", function (done) {
     var ssm = new SSM();
-    ssm.state("state1").on("event1", function () { this.goto("state2"); });
+    ssm.state("state1").on("event1", function () { this.go("state2"); });
     ssm.state("state2").on("event1", done);
     ssm.initialize("state1");
     ssm.event1();
@@ -21,7 +21,7 @@ describe("SSM", function () {
 
   it("should error if trying to transition to a non-existing state", function (done) {
     var ssm = new SSM();
-    ssm.state("state1").on("event1", function () { this.goto("non-existing-state"); });
+    ssm.state("state1").on("event1", function () { this.go("non-existing-state"); });
     ssm.initialize("state1");
     try {
       ssm.event1(); 
@@ -33,7 +33,7 @@ describe("SSM", function () {
   it("should error if trying to register a reserved api", function (done) {
     var ssm = new SSM();
     try {
-      ssm.state("foo").event("goto"); 
+      ssm.state("foo").event("go"); 
     } catch (e) {
       done(); 
     }
@@ -80,7 +80,7 @@ describe("SSM", function () {
 
   it("should invoke the enter event when entering a state", function (done) {
     var ssm = new SSM();
-    ssm.state("state1").on("event1", function () { this.goto("state2"); });
+    ssm.state("state1").on("event1", function () { this.go("state2"); });
     ssm.state("state2").on("enter", done);
     ssm.initialize("state1");
     ssm.event1();
@@ -88,7 +88,7 @@ describe("SSM", function () {
 
   it("should invoke the exit event when entering a state", function (done) {
     var ssm = new SSM();
-    ssm.state("state1").on("event1", function () { this.goto("state2"); });
+    ssm.state("state1").on("event1", function () { this.go("state2"); });
     ssm.state("state1").on("exit", done);
     ssm.state("state2").on("enter", function () {});
     ssm.initialize("state1");
@@ -101,7 +101,7 @@ describe("SSM", function () {
       throw "state did not change";
     });
     ssm.initialize("state1");
-    ssm.goto("state1");
+    ssm.go("state1");
   });
 
   it("should not invoke the exit event if the state didn't actually change", function () {
@@ -110,7 +110,7 @@ describe("SSM", function () {
       throw "state did not change";
     });
     ssm.initialize("state1");
-    ssm.goto("state1");
+    ssm.go("state1");
   });
 
   it("should work with multiple enter events", function (done) {
@@ -120,7 +120,7 @@ describe("SSM", function () {
     ssm.state("state1").on("enter", function () { ++callCount === 2 && done(); });
     ssm.state("state1").on("enter", function () { ++callCount === 2 && done(); });
     ssm.initialize("state2");
-    ssm.goto("state1");
+    ssm.go("state1");
   });
 
   it("should work with multiple exit events", function (done) {
@@ -130,14 +130,14 @@ describe("SSM", function () {
     ssm.state("state1").on("exit", function () { ++callCount === 2 && done(); });
     ssm.state("state1").on("exit", function () { ++callCount === 2 && done(); });
     ssm.initialize("state1");
-    ssm.goto("state2");
+    ssm.go("state2");
   });
 
   it("should be chainable", function (done) {
     var ssm = new SSM()
         .state("state1")
           .on("event1", function () {
-            this.goto("state2");
+            this.go("state2");
           })
           .on("exit", function () { })
         .state("state2")
@@ -163,7 +163,7 @@ describe("SSM", function () {
   it("should return the correct current state name", function () {
     var ssm = new SSM();
     ssm.state("state1").on("event1", function () {
-      this.goto("state2");
+      this.go("state2");
     });
     ssm.state("state2");
     ssm.initialize("state1");
