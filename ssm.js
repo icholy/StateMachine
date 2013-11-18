@@ -13,7 +13,7 @@ var SSM = (function () {
    * @param {SSM} sm - state machine
    * @param {String} name - state name
    */
-  var State = function (sm, name) {
+  var State = function State(sm, name) {
     this._sm     = sm;
     this._name   = name;
     this._events = {};
@@ -140,7 +140,7 @@ var SSM = (function () {
    *
    * @class SSM
    */
-  var SSM = function () {
+  var SSM = function SSM() {
     this._states  = {};
     this._current = null;
   };
