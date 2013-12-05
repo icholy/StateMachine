@@ -11,5 +11,8 @@
   "repository": "https://github.com/icholy/SSM.git",
   "devDependencies": {
     "mocha": "~1.12.1"
+  },
+  "dependencies": {
+    "lodash": "~2.4.1"
   }
 }

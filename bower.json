@@ -1,0 +1,24 @@
+{
+  "name": "ssm",
+  "version": "2.0.0",
+  "homepage": "https://github.com/icholy/SSM",
+  "authors": [
+    "Ilia Choly"
+  ],
+  "description": "simple state machine",
+  "main": "ssm.js",
+  "keywords": [
+    "state-machine"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "lodash": "~2.4.1"
+  }
+}
