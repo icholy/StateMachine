@@ -7,7 +7,7 @@
 ``` js
 
 // create instance
-var ssm = new SSM();
+var ssm = new SSM({ verbose: true });
 
 // define states
 var state1 = ssm.state("state1");
@@ -45,7 +45,6 @@ ssm.event2("foo", "bar", "baz");
 //get current state name
 var name = ssm.current();
 console.log(name);
-
 ```
 
 **Note:** the api is completely chainable
