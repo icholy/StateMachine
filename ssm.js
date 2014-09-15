@@ -30,7 +30,8 @@ var SSM = (function () {
    * @return {Function}
    */
   State.prototype._makeEventMethodFn = function (event) {
-    var sm = this._sm;
+    var sm      = this._sm,
+        verbose = sm._options.verbose;
     return function () {
       var state = sm._current,
           args  = arguments,
@@ -43,6 +44,9 @@ var SSM = (function () {
         throw new Error(
           event + " event not defined for " + state._name + " state"
         );
+      }
+      if (verbose) {
+        console.log("SSM: " + state._name + "." + event);
       }
       events[event].forEach(function (fn) {
         fn.apply(sm, args);
@@ -140,9 +144,17 @@ var SSM = (function () {
    *
    * @class SSM
    */
-  var SSM = function SSM() {
+  var SSM = function SSM(options) {
     this._states  = {};
     this._current = null;
+
+    if (isUndefined(options)) {
+      options = {};
+    }
+    if (isUndefined(options.verbose)) {
+      options.verbose = false;
+    }
+    this._options = options;
   };
 
   /**
@@ -210,6 +222,9 @@ var SSM = (function () {
       throw new Error(name + " state does not exist");
     }
     if (current._name !== name) {
+      if (this._options.verbose) {
+        console.log("SSM: " + current._name + " -> " + name);
+      }
       current._exit.forEach(execute);
       this._current = state;
       state._enter.forEach(execute);
