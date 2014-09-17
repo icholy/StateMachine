@@ -7,43 +7,45 @@
 ``` js
 
 // create instance
-var ssm = new SSM({ verbose: true });
+var machine = new SSM({ verbose: true });
 
 // define states
-var state1 = ssm.state("state1");
+machine.state("state1")
 
-state1.on("event1", function () {
-  // do something
-  this.go("state2");
-});
+  .on("event1", function () {
+    // do something
+    this.go("state2");
+  })
 
-state1.on("event2", function (x, y, z) {
-  // do something
-  console.log("x:", x, "y:", y, "z:", z);
-});
+  .on("event2", function (x, y, z) {
+    // do something
+    console.log("x:", x, "y:", y, "z:", z);
+  })
 
-state1.on("enter", function () {
-  // special event that gets run when the state is entered
-});
+  .on("enter", function () {
+    // special event that gets run when the state is entered
+  });
 
-ssm.state("state2")
+machine.state("state2")
+
   .on("event2", function () {
     // do something else
     this.go("state1");
   })
+
   .on("exit", function () {
     // special event that gets run when the state is exited
   });
 
 // set initial state
-ssm.initialize("state1");
+machine.initialize("state1");
 
 // invoke events
-ssm.event1();
-ssm.event2("foo", "bar", "baz");
+machine.event1();
+machine.event2("foo", "bar", "baz");
 
 //get current state name
-var name = ssm.current();
+var name = machine.current();
 console.log(name);
 ```
 
