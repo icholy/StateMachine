@@ -98,7 +98,7 @@ describe("SSM", function () {
   it("should not invoke the enter event if the state didn't actually change", function () {
     var ssm = new SSM();
     ssm.state("state1").on("enter", function () {
-      throw "state did not change";
+      throw Error("state did not change");
     });
     ssm.initialize("state1");
     ssm.go("state1");
@@ -107,7 +107,7 @@ describe("SSM", function () {
   it("should not invoke the exit event if the state didn't actually change", function () {
     var ssm = new SSM();
     ssm.state("state1").on("exit", function () {
-      throw "state did not change";
+      throw Error("state did not change");
     });
     ssm.initialize("state1");
     ssm.go("state1");
@@ -151,7 +151,7 @@ describe("SSM", function () {
     var ssm = new SSM();
     ssm.state("state1").on("event1", function (arg1, arg2) {
       if (arg1 !== "foo" || arg2 !== "bar") {
-        throw new Error("parameters were not passed correctly");
+        throw Error("parameters were not passed correctly");
       } else {
         done();
       }
@@ -169,7 +169,7 @@ describe("SSM", function () {
     ssm.initialize("state1");
     ssm.event1();
     if (ssm.current() !== "state2") {
-      throw "incorrect state";
+      throw Error("incorrect state");
     }
   });
 
@@ -180,11 +180,11 @@ describe("SSM", function () {
     ssm.initialize("state1");
     ssm.event1();
     if (ssm.current() !== "state2") {
-      throw "incorrect state";
+      throw Error("incorrect state");
     }
     ssm.event1();
     if (ssm.current() !== "state1") {
-      throw "incorrect state";
+      throw Error("incorrect state");
     }
   });
 
@@ -196,7 +196,7 @@ describe("SSM", function () {
     ssm.event1();
     ssm.event1();
     if (ssm.current() !== "state2") {
-      throw "incorrect state";
+      throw Error("incorrect state");
     }
   });
 
@@ -207,7 +207,7 @@ describe("SSM", function () {
 
       .on("exit", function () {
         if (this !== ssm) {
-          throw "this does not equal ssm";
+          throw Error("this does not equal ssm");
         }
       })
 
@@ -217,7 +217,7 @@ describe("SSM", function () {
 
       .on("enter", function () {
         if (this !== ssm) {
-          throw "this does not equal ssm";
+          throw Error("this does not equal ssm");
         }
       });
 
