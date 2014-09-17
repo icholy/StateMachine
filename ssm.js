@@ -217,7 +217,7 @@ var SSM = (function () {
   SSM.prototype.go = function (name) {
     var state   = this._states[name],
         current = this._current,
-        execute = function (fn) { fn.call(this._sm); }.bind(this);
+        execute = function (fn) { fn.call(this); }.bind(this);
     if (isUndefined(state)) {
       throw new Error(name + " state does not exist");
     }
