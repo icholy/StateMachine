@@ -200,4 +200,30 @@ describe("SSM", function () {
     }
   });
 
+  it("should provide the SSM instance as this in enter and exit", function () {
+    var ssm = new SSM();
+
+    ssm.state("state1")
+
+      .on("exit", function () {
+        if (this !== ssm) {
+          throw "this does not equal ssm";
+        }
+      })
+
+      .on("event1", "state2");
+
+    ssm.state("state2")
+
+      .on("enter", function () {
+        if (this !== ssm) {
+          throw "this does not equal ssm";
+        }
+      });
+
+    ssm.initialize("state1");
+    ssm.event1()
+
+  });
+
 });
