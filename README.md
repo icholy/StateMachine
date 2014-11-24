@@ -7,7 +7,7 @@
 ``` js
 
 // create instance
-var machine = new SSM({ verbose: true });
+var machine = new SSM({ verbose: true, name: "MyStateMachine" });
 
 // define states
 machine.state("state1")
