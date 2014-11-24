@@ -11,7 +11,7 @@ var SSM = (function () {
    *
    * @class State
    * @param {SSM} sm - state machine
-   * @param {String} name - state name
+   * @param {string} name - state name
    */
   var State = function State(sm, name) {
     this._sm     = sm;
@@ -24,14 +24,15 @@ var SSM = (function () {
   /**
    * create a function for invoking an event
    *
-   * @method _makeEventMethodFn
+   * @method _makeEventMethodfn
    * @private
-   * @param {String} event - event name
-   * @return {Function}
+   * @param {string} event - event name
+   * @return {function}
    */
   State.prototype._makeEventMethodFn = function (event) {
     var sm      = this._sm,
-        verbose = sm._options.verbose;
+        verbose = sm._options.verbose,
+        name    = sm._options.name;
     return function () {
       var state = sm._current,
           args  = arguments,
@@ -46,7 +47,7 @@ var SSM = (function () {
         );
       }
       if (verbose) {
-        console.log("SSM: " + state._name + "." + event);
+        console.log(name + ": " + state._name + "." + event);
       }
       events[event].forEach(function (fn) {
         fn.apply(sm, args);
@@ -60,8 +61,8 @@ var SSM = (function () {
    *
    * @method _makeEventHandlerFn
    * @private
-   * @param {Function|String|Undefined} x - handler
-   * @return {Function}
+   * @param {function|string|undefined} x - handler
+   * @return {function}
    */
   State.prototype._makeEventHandlerFn = function (x) {
     var sm = this._sm;
@@ -86,8 +87,8 @@ var SSM = (function () {
    *  entering or exiting that state.
    *
    * @method on
-   * @param {String} event - event name
-   * @param {Function|String} handler - event callback function or state name
+   * @param {string} event - event name
+   * @param {function|string} handler - event callback function or state name
    * @return {State} state 
    */
   State.prototype.on = function (event, handler) {
@@ -121,7 +122,7 @@ var SSM = (function () {
    * See SSM#initialize method
    *
    * @method initialize
-   * @param {String} name - initial state name
+   * @param {string} name - initial state name
    * @return {SSM} state machine
    */
   State.prototype.initialize = function (name) {
@@ -132,7 +133,7 @@ var SSM = (function () {
    * See SSM#state method
    *
    * @method state
-   * @param {String} name - state name
+   * @param {string} name - state name
    * @return {State} state specified by name parameter
    */
   State.prototype.state = function (name) {
@@ -143,6 +144,9 @@ var SSM = (function () {
    * Simple State Machine
    *
    * @class SSM
+   * @param {object}  options
+   * @param {boolean} options.verbose
+   * @param {string}  options.name
    */
   var SSM = function SSM(options) {
     this._states  = {};
@@ -166,7 +170,7 @@ var SSM = (function () {
    * will result in an `Error` being thrown
    *
    * @method initialize
-   * @param {String} name - initial state name
+   * @param {string} name - initial state name
    * @return {SSM} state machine
    */
   SSM.prototype.initialize = function (name) {
@@ -182,7 +186,7 @@ var SSM = (function () {
    * Creates or gets existing State
    *
    * @method state
-   * @param {String} name - state name
+   * @param {string} name - state name
    * @return {State} state specified by name
    */
   SSM.prototype.state = function (name) {
@@ -198,7 +202,7 @@ var SSM = (function () {
    * Gets the name of the current State
    *
    * @method current
-   * @return {String} name - current state name
+   * @return {string} name - current state name
    */
   SSM.prototype.current = function () {
     var current = this._current;
@@ -214,7 +218,7 @@ var SSM = (function () {
    * Go to another state
    *
    * @method go
-   * @param {String} name - state to transition to
+   * @param {string} name - state to transition to
    * @return {SSM} state machine
    */
   SSM.prototype.go = function (name) {
