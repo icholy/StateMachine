@@ -154,6 +154,9 @@ var SSM = (function () {
     if (isUndefined(options.verbose)) {
       options.verbose = false;
     }
+    if (isUndefined(options.name)) {
+      options.name = "SSM";
+    }
     this._options = options;
   };
 
@@ -223,7 +226,7 @@ var SSM = (function () {
     }
     if (current._name !== name) {
       if (this._options.verbose) {
-        console.log("SSM: " + current._name + " -> " + name);
+        console.log(this._options.name + ": " + current._name + " -> " + name);
       }
       current._exit.forEach(execute);
       this._current = state;
