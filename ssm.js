@@ -32,7 +32,8 @@ var SSM = (function () {
   State.prototype._makeEventMethodFn = function (event) {
     var sm      = this._sm,
         verbose = sm._options.verbose,
-        name    = sm._options.name;
+        name    = sm._options.name,
+        logEx   = sm._options.logExceptions;
     return function () {
       var state = sm._current,
           args  = arguments,
@@ -49,9 +50,20 @@ var SSM = (function () {
       if (verbose) {
         console.log(name + ": " + state._name + "." + event);
       }
-      events[event].forEach(function (fn) {
-        fn.apply(sm, args);
-      });
+      if (logEx) {
+        try {
+          events[event].forEach(function (fn) {
+            fn.apply(sm, args);
+          });
+        } catch (e) {
+          console.log(name + ": " + state._name + " ! " + e.message);
+          throw e;
+        }
+      } else {
+        events[event].forEach(function (fn) {
+          fn.apply(sm, args);
+        });
+      }
       return sm;
     };
   };
@@ -160,6 +172,9 @@ var SSM = (function () {
     }
     if (isUndefined(options.name)) {
       options.name = "SSM";
+    }
+    if (isUndefined(options.logExceptions)) {
+      options.logExceptions = false;
     }
     this._options = options;
   };
