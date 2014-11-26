@@ -1,6 +1,29 @@
 
 var SSM = require("../ssm.js");
 
+var ConsoleLogStub = function () {
+  this.logFn = console.log;
+  this.lines = [];
+  console.log =  function () {
+    this.lines.push(
+      [].slice(arguments).map(function (a) {
+        return a.toString();
+      }).join(' ')
+    );
+    this.logFn.apply(console, arguments);
+  }.bind(this);
+};
+
+ConsoleLogStub.prototype.outputContains = function (query) {
+  return this.lines.some(function (line) {
+    return line.indexOf(query);
+  });
+};
+
+ConsoleLogStub.prototype.restore = function () {
+  console.log = this.logFn;
+};
+
 describe("SSM", function () {
 
   it("should invoke the transition function", function (done) {
@@ -223,6 +246,42 @@ describe("SSM", function () {
 
     ssm.initialize("state1");
     ssm.event1()
+
+  });
+
+  it("should log exceptions when the logExceptions option is set", function () {
+
+    var ssm = new SSM({ logExceptions: true });
+
+    // stub the console
+    var stub = new ConsoleLogStub();
+
+    var errMessage = "this_should_be_logged_and_rethrown",
+        wasRethrown = false;
+
+    try {
+
+      ssm.state("state")
+        .on("event", function () {
+          throw Error(errMessage);
+        });
+
+      ssm.initialize("state");
+      ssm.event();
+
+    } catch (e) {
+      wasRethrown = true;
+    }
+
+    stub.restore();
+
+    if (!wasRethrown) {
+      throw Error("exception was not rethrown");
+    }
+
+    if (!stub.outputContains(errMessage)) {
+      throw Error("exception was not logged");
+    }
 
   });
 
