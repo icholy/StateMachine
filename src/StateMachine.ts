@@ -147,7 +147,7 @@ module StateMachine {
     /**
      * @param options Options
      */
-    constructor(options: Options) {
+    constructor(options?: Options) {
       this._states  = {};
       this.current = null;
 
