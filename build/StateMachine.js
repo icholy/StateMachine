@@ -22,14 +22,12 @@ var StateMachine;
             this._exit = [];
         }
         /**
-         * create a function for invoking an event
+         * Create a function for invoking an event
          *
-         * @method _makeEventMethodfn
-         * @private
-         * @param {string} event - event name
-         * @return {function}
+         * @param event - Event name
+         * @return Event method
          */
-        State.prototype._makeEventMethodFn = function (event) {
+        State.prototype._makeEventMethod = function (event) {
             var sm = this._sm,
                 verbose = sm._options.verbose,
                 name = sm._options.name,
@@ -62,26 +60,22 @@ var StateMachine;
                         fn.apply(sm, args);
                     });
                 }
-                return sm;
             };
         };
         /**
-         * convert an event handler parameter to a function
+         * Convert an event handler parameter to a function
          *
-         * @method _makeEventHandlerFn
-         * @private
-         * @param {function|string|undefined} x - handler
-         * @return {function}
+         * @param x Handler parameter
+         * @return Event handler
          */
-        State.prototype._makeEventHandlerFn = function (x) {
-            var sm = this._sm,
-                toString = Object.prototype.toString;
-            if (toString.call(x) === "[object Function]") {
+        State.prototype._makeEventHandler = function (x) {
+            var _this = this;
+            if (typeof x === "function") {
                 return x;
             }
             if (typeof x === "string") {
                 return function () {
-                    return sm.go(x);
+                    return _this._sm.go(x);
                 };
             }
             if (typeof x === "undefined") {
@@ -92,7 +86,7 @@ var StateMachine;
             throw new Error("invalid event handler");
         };
         /**
-         * register a state event and add the event method
+         * Register a state event and add the event method
          * to the state machine instance
          *
          * Note:
@@ -102,15 +96,14 @@ var StateMachine;
          *  they are executed when the state machine is
          *  entering or exiting that state.
          *
-         * @method on
-         * @param {string} event - event name
-         * @param {function|string} handler - event callback function or state name
-         * @return {State} state
+         * @param event Event name
+         * @param handler Event callback function or state name
+         * @return State
          */
         State.prototype.on = function (event, handler) {
             var events = this._events,
                 sm = this._sm,
-                fn = this._makeEventHandlerFn(handler);
+                fn = this._makeEventHandler(handler);
             switch (event) {
                 case "enter":
                     this._enter.push(fn);
@@ -128,9 +121,8 @@ var StateMachine;
                     }
                     events[event].push(fn);
                     if (!sm.hasOwnProperty(event)) {
-                        sm[event] = this._makeEventMethodFn(event);
+                        sm[event] = this._makeEventMethod(event);
                     }
-                    break;
             }
             return this;
         };
@@ -139,12 +131,7 @@ var StateMachine;
     _StateMachine.State = State;
     var StateMachine = (function () {
         /**
-         * Simple State Machine
-         *
-         * @class StateMachine
-         * @param {object}  options
-         * @param {boolean} options.verbose
-         * @param {string}  options.name
+         * @param options Options
          */
         function StateMachine(options) {
             this._states = {};
@@ -168,9 +155,8 @@ var StateMachine;
          * trying to invoke event methods before initializing
          * will result in an `Error` being thrown
          *
-         * @method initialize
-         * @param {string} name - initial state name
-         * @return {StateMachine} state machine
+         * @param name Initial state name
+         * @return State machine
          */
         StateMachine.prototype.initialize = function (name) {
             var states = this._states;
@@ -178,14 +164,12 @@ var StateMachine;
                 throw new Error(name + " state is not defined");
             }
             this._current = states[name];
-            return this;
         };
         /**
          * Creates or gets existing State
          *
-         * @method state
-         * @param {string} name - state name
-         * @return {State} state specified by name
+         * @param Name - state name
+         * @return State specified by name
          */
         StateMachine.prototype.state = function (name) {
             var states = this._states;
@@ -197,8 +181,7 @@ var StateMachine;
         /**
          * Gets the name of the current State
          *
-         * @method current
-         * @return {string} name - current state name
+         * @return name Current state name
          */
         StateMachine.prototype.current = function () {
             var current = this._current;
@@ -210,9 +193,7 @@ var StateMachine;
         /**
          * Go to another state
          *
-         * @method go
-         * @param {string} name - state to transition to
-         * @return {StateMachine} state machine
+         * @param name State to transition to
          */
         StateMachine.prototype.go = function (name) {
             var _this = this;
@@ -232,7 +213,6 @@ var StateMachine;
                 this._current = state;
                 state._enter.forEach(execute);
             }
-            return this;
         };
         return StateMachine;
     })();

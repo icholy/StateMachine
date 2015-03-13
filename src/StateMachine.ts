@@ -34,14 +34,12 @@ module StateMachine {
     }
 
     /**
-     * create a function for invoking an event
+     * Create a function for invoking an event
      *
-     * @method _makeEventMethodfn
-     * @private
-     * @param {string} event - event name
-     * @return {function}
+     * @param event - Event name
+     * @return Event method
      */
-    private _makeEventMethodFn(event: string): { (): void } {
+    private _makeEventMethod(event: string): EventMethod {
       var sm      = this._sm,
           verbose = sm._options.verbose,
           name    = sm._options.name,
@@ -76,26 +74,21 @@ module StateMachine {
             fn.apply(sm, args);
           });
         }
-        return sm;
       };
     }
 
     /**
-     * convert an event handler parameter to a function
+     * Convert an event handler parameter to a function
      *
-     * @method _makeEventHandlerFn
-     * @private
-     * @param {function|string|undefined} x - handler
-     * @return {function}
+     * @param x Handler parameter
+     * @return Event handler
      */
-    private _makeEventHandlerFn(x) {
-      var sm       = this._sm,
-          toString = Object.prototype.toString;
-      if (toString.call(x) === '[object Function]') {
+    private _makeEventHandler(x?: EventHandler|string): EventHandler {
+      if (typeof x === "function") {
         return x;
       }
       if (typeof x === "string") {
-        return () => sm.go(x);
+        return () => this._sm.go(x);
       }
       if (typeof x === "undefined") {
         return () => undefined;
@@ -104,7 +97,7 @@ module StateMachine {
     }
 
     /**
-     * register a state event and add the event method
+     * Register a state event and add the event method
      * to the state machine instance
      *
      * Note:
@@ -114,15 +107,14 @@ module StateMachine {
      *  they are executed when the state machine is
      *  entering or exiting that state.
      *
-     * @method on
-     * @param {string} event - event name
-     * @param {function|string} handler - event callback function or state name
-     * @return {State} state 
+     * @param event Event name
+     * @param handler Event callback function or state name
+     * @return State 
      */
-    on(event, handler) {
+    on(event: string, handler: EventHandler|string): State {
       var events = this._events,
           sm     = this._sm,
-          fn     = this._makeEventHandlerFn(handler);
+          fn     = this._makeEventHandler(handler);
       switch (event) {
         case "enter":
           this._enter.push(fn);
@@ -139,9 +131,8 @@ module StateMachine {
           }
           events[event].push(fn);
           if (!sm.hasOwnProperty(event)) {
-            sm[event] = this._makeEventMethodFn(event);
+            sm[event] = this._makeEventMethod(event);
           }
-          break;
       }
       return this;
     }
@@ -154,6 +145,10 @@ module StateMachine {
     logExceptions?: boolean;
   }
 
+  export interface EventMethod {
+    (...any): any;
+  }
+
   export class StateMachine {
 
     _states:  { [name: string]: State };
@@ -161,12 +156,7 @@ module StateMachine {
     _options: Options;
 
     /**
-     * Simple State Machine
-     *
-     * @class StateMachine
-     * @param {object}  options
-     * @param {boolean} options.verbose
-     * @param {string}  options.name
+     * @param options Options
      */
     constructor(options: Options) {
       this._states  = {};
@@ -192,27 +182,24 @@ module StateMachine {
      * trying to invoke event methods before initializing
      * will result in an `Error` being thrown
      *
-     * @method initialize
-     * @param {string} name - initial state name
-     * @return {StateMachine} state machine
+     * @param name Initial state name
+     * @return State machine
      */
-    initialize(name) {
+    initialize(name: string) {
       var states = this._states;
       if (isUndefined(states[name])) {
         throw new Error(name + " state is not defined");
       }
       this._current = states[name];
-      return this;
     }
 
     /**
      * Creates or gets existing State
      *
-     * @method state
-     * @param {string} name - state name
-     * @return {State} state specified by name
+     * @param Name - state name
+     * @return State specified by name
      */
-    state(name) {
+    state(name: string): State {
       var states = this._states;
       if (!states.hasOwnProperty(name)) {
         states[name] = new State(this, name);
@@ -223,10 +210,9 @@ module StateMachine {
     /**
      * Gets the name of the current State
      *
-     * @method current
-     * @return {string} name - current state name
+     * @return name Current state name
      */
-    current() {
+    current(): string {
       var current = this._current;
       if (current === null) {
         throw new Error(
@@ -238,11 +224,9 @@ module StateMachine {
     /**
      * Go to another state
      *
-     * @method go
-     * @param {string} name - state to transition to
-     * @return {StateMachine} state machine
+     * @param name State to transition to
      */
-    go(name) {
+    go(name: string): void {
       var state   = this._states[name],
           current = this._current,
           execute = fn => fn.call(this);
@@ -257,7 +241,6 @@ module StateMachine {
         this._current = state;
         state._enter.forEach(execute);
       }
-      return this;
     }
   }
 
