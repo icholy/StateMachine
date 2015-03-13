@@ -65,7 +65,7 @@ module StateMachine {
      * @param handler Event callback function or state name
      * @return State 
      */
-    on(event: string, handler: EventHandler|string): State {
+    on(event: string, handler?: EventHandler|string): State {
       var events = this._events,
           sm     = this._sm,
           fn     = this._makeEventHandler(handler);

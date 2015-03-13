@@ -37,7 +37,7 @@ declare module StateMachine {
          * @param handler Event callback function or state name
          * @return State
          */
-        on(event: string, handler: EventHandler | string): State;
+        on(event: string, handler?: EventHandler | string): State;
         /**
          * Emit an event
          *
