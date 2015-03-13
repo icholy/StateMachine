@@ -1,10 +1,13 @@
 {
-  "name": "ssm",
+  "name": "StateMachine",
   "version": "2.3.0",
-  "description": "simple state machine",
-  "main": "index.js",
+  "description": "State Machine",
+  "main": "build/StateMachine.js",
   "scripts": {
     "test": "mocha test/"
+  },
+  "typescript": {
+    "definition": "build/StateMachine.d.ts"
   },
   "author": "Ilia Choly",
   "license": "MIT",
@@ -13,6 +16,20 @@
     "mocha": "~1.12.1"
   },
   "dependencies": {
-    "lodash": "~2.4.1"
+    "gulp": "^3.8.11",
+    "gulp-babel": "^4.0.0",
+    "gulp-karma": "0.0.4",
+    "gulp-mocha": "^2.0.0",
+    "gulp-sourcemaps": "^1.5.0",
+    "gulp-tslint": "^1.4.4",
+    "gulp-typedoc": "^1.1.0",
+    "gulp-typescript": "^2.4.2",
+    "gulp-uglify": "^1.1.0",
+    "karma": "^0.12.31",
+    "karma-mocha": "^0.1.10",
+    "karma-phantomjs-launcher": "^0.1.4",
+    "merge-stream": "^0.1.7",
+    "mocha": "^2.2.1",
+    "rimraf": "^2.3.2"
   }
 }

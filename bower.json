@@ -1,12 +1,15 @@
 {
-  "name": "ssm",
+  "name": "StateMachine",
   "version": "2.3.0",
   "homepage": "https://github.com/icholy/SSM",
   "authors": [
     "Ilia Choly"
   ],
-  "description": "simple state machine",
-  "main": "ssm.js",
+  "typescript": {
+    "definition": "build/StateMachine.d.ts"
+  },
+  "description": "State Machine",
+  "main": "build/StateMachine.js",
   "keywords": [
     "state-machine"
   ],

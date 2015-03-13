@@ -25,7 +25,7 @@ gulp.task('build', function () {
   return merge(
     tsResult.js
         .pipe(babel())
-        .pipe(uglify())
+        // .pipe(uglify())
         .pipe(sourcemaps.write('.'))
         .pipe(gulp.dest('build')),
     tsResult.dts.pipe(gulp.dest('build'))

@@ -1,5 +1,5 @@
 
-var SSM = (function () {
+var StateMachine = (function () {
 
   var reserved = ["state", "go", "initialize", "current"];
 
@@ -10,7 +10,7 @@ var SSM = (function () {
    * a single state
    *
    * @class State
-   * @param {SSM} sm - state machine
+   * @param {StateMachine} sm - state machine
    * @param {string} name - state name
    */
   var State = function State(sm, name) {
@@ -77,14 +77,18 @@ var SSM = (function () {
    * @return {function}
    */
   State.prototype._makeEventHandlerFn = function (x) {
-    var sm = this._sm;
-    switch (Object.prototype.toString.call(x)) {
-      case '[object Function]' : return x;
-      case '[object String]'   : return sm.go.bind(sm, x);
-      case '[object Undefined]': return function () {};
-      default:
-        throw new Error("invalid event handler");
+    var sm       = this._sm,
+        toString = Object.prototype.toString;
+    if (toString.call(x) === '[object Function]') {
+      return x;
     }
+    if (typeof x === "string") {
+      return () => sm.go(x);
+    }
+    if (typeof x === "undefined") {
+      return () => undefined;
+    }
+    throw new Error("invalid event handler");
   };
 
   /**
@@ -131,18 +135,18 @@ var SSM = (function () {
   };
 
   /**
-   * See SSM#initialize method
+   * See StateMachine#initialize method
    *
    * @method initialize
    * @param {string} name - initial state name
-   * @return {SSM} state machine
+   * @return {StateMachine} state machine
    */
   State.prototype.initialize = function (name) {
     return this._sm.initialize(name);
   };
 
   /**
-   * See SSM#state method
+   * See StateMachine#state method
    *
    * @method state
    * @param {string} name - state name
@@ -155,12 +159,12 @@ var SSM = (function () {
   /**
    * Simple State Machine
    *
-   * @class SSM
+   * @class StateMachine
    * @param {object}  options
    * @param {boolean} options.verbose
    * @param {string}  options.name
    */
-  var SSM = function SSM(options) {
+  var StateMachine = function StateMachine(options) {
     this._states  = {};
     this._current = null;
 
@@ -171,7 +175,7 @@ var SSM = (function () {
       options.verbose = false;
     }
     if (isUndefined(options.name)) {
-      options.name = "SSM";
+      options.name = "StateMachine";
     }
     if (isUndefined(options.logExceptions)) {
       options.logExceptions = false;
@@ -186,9 +190,9 @@ var SSM = (function () {
    *
    * @method initialize
    * @param {string} name - initial state name
-   * @return {SSM} state machine
+   * @return {StateMachine} state machine
    */
-  SSM.prototype.initialize = function (name) {
+  StateMachine.prototype.initialize = function (name) {
     var states = this._states;
     if (isUndefined(states[name])) {
       throw new Error(name + " state is not defined");
@@ -204,7 +208,7 @@ var SSM = (function () {
    * @param {string} name - state name
    * @return {State} state specified by name
    */
-  SSM.prototype.state = function (name) {
+  StateMachine.prototype.state = function (name) {
     var states = this._states;
     if (isUndefined(states[name])) {
       states[name] = new State(this, name);
@@ -212,19 +216,17 @@ var SSM = (function () {
     return states[name];
   };
 
-
   /**
    * Gets the name of the current State
    *
    * @method current
    * @return {string} name - current state name
    */
-  SSM.prototype.current = function () {
+  StateMachine.prototype.current = function () {
     var current = this._current;
     if (current === null) {
       throw new Error(
-        "the state machine has not been initialized"
-      );
+          "the state machine has not been initialized");
     }
     return current._name;
   };
@@ -234,12 +236,12 @@ var SSM = (function () {
    *
    * @method go
    * @param {string} name - state to transition to
-   * @return {SSM} state machine
+   * @return {StateMachine} state machine
    */
-  SSM.prototype.go = function (name) {
+  StateMachine.prototype.go = function (name) {
     var state   = this._states[name],
         current = this._current,
-        execute = function (fn) { fn.call(this); }.bind(this);
+        execute = fn => fn.call(this);
     if (isUndefined(state)) {
       throw new Error(name + " state does not exist");
     }
@@ -254,10 +256,6 @@ var SSM = (function () {
     return this;
   };
 
-  return SSM;
+  return StateMachine;
 
 }).call(this);
-
-if (typeof module !== "undefined") {
-  module.exports = SSM;
-}
