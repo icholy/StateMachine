@@ -2,7 +2,6 @@
 
 var StateMachine;
 (function (_StateMachine) {
-    var reserved = ["state", "go", "initialize", "current"];
     function isUndefined(x) {
         return typeof x === "undefined";
     }
@@ -21,47 +20,6 @@ var StateMachine;
             this._enter = [];
             this._exit = [];
         }
-        /**
-         * Create a function for invoking an event
-         *
-         * @param event - Event name
-         * @return Event method
-         */
-        State.prototype._makeEventMethod = function (event) {
-            var sm = this._sm,
-                verbose = sm._options.verbose,
-                name = sm._options.name,
-                logEx = sm._options.logExceptions;
-            return function () {
-                var state = sm._current,
-                    args = arguments,
-                    events;
-                if (state === null) {
-                    throw new Error("the state machine has not been initialized");
-                }
-                events = state._events;
-                if (!events.hasOwnProperty(event)) {
-                    throw new Error(event + " event not defined for " + state._name + " state");
-                }
-                if (verbose) {
-                    console.log(name + ": " + state._name + "." + event);
-                }
-                if (logEx) {
-                    try {
-                        events[event].forEach(function (fn) {
-                            fn.apply(sm, args);
-                        });
-                    } catch (e) {
-                        console.log(name + ": " + state._name + " ! " + e.message);
-                        throw e;
-                    }
-                } else {
-                    events[event].forEach(function (fn) {
-                        fn.apply(sm, args);
-                    });
-                }
-            };
-        };
         /**
          * Convert an event handler parameter to a function
          *
@@ -112,17 +70,10 @@ var StateMachine;
                     this._exit.push(fn);
                     break;
                 default:
-                    if (reserved.indexOf(event) !== -1) {
-                        throw new Error(event + " method is reserved for the api");
-                    }
-                    ;
                     if (!events.hasOwnProperty(event)) {
                         events[event] = [];
                     }
                     events[event].push(fn);
-                    if (!sm.hasOwnProperty(event)) {
-                        sm[event] = this._makeEventMethod(event);
-                    }
             }
             return this;
         };
@@ -189,6 +140,48 @@ var StateMachine;
                 throw new Error("the state machine has not been initialized");
             }
             return current._name;
+        };
+        /**
+         * Emit an event
+         *
+         * @param event Event name
+         * @param args Arguments to pass to event handler
+         */
+        StateMachine.prototype.emit = function (event) {
+            var _this = this;
+            var args = [];
+            for (var _i = 1; _i < arguments.length; _i++) {
+                args[_i - 1] = arguments[_i];
+            }
+            var verbose = this._options.verbose,
+                name = this._options.name,
+                logEx = this._options.logExceptions,
+                state = this._current,
+                events;
+            if (state === null) {
+                throw new Error("the state machine has not been initialized");
+            }
+            events = state._events;
+            if (!events.hasOwnProperty(event)) {
+                throw new Error(event + " event not defined for " + state._name + " state");
+            }
+            if (verbose) {
+                console.log(name + ": " + state._name + "." + event);
+            }
+            if (logEx) {
+                try {
+                    events[event].forEach(function (fn) {
+                        return fn.apply(_this, args);
+                    });
+                } catch (e) {
+                    console.log(name + ": " + state._name + " ! " + e.message);
+                    throw e;
+                }
+            } else {
+                events[event].forEach(function (fn) {
+                    return fn.apply(_this, args);
+                });
+            }
         };
         /**
          * Go to another state

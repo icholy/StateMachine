@@ -28,7 +28,7 @@ describe("StateMachine", function () {
     var sm = new StateMachine.StateMachine();
     sm.state("state1").on("event1", done);
     sm.initialize("state1");
-    sm.event1();
+    sm.emit("event1");
   });
 
   it("should correctly transition between states", function (done) {
@@ -38,8 +38,8 @@ describe("StateMachine", function () {
     });
     sm.state("state2").on("event1", done);
     sm.initialize("state1");
-    sm.event1();
-    sm.event1();
+    sm.emit("event1");
+    sm.emit("event1");
   });
 
   it("should error if trying to transition to a non-existing state", function (done) {
@@ -47,7 +47,7 @@ describe("StateMachine", function () {
     sm.state("state1").on("event1", function () { this.go("non-existing-state"); });
     sm.initialize("state1");
     try {
-      sm.event1(); 
+      sm.emit("event1"); 
     } catch (e) {
       done();
     }
@@ -69,7 +69,7 @@ describe("StateMachine", function () {
     sm.state("state2").on("event2", dummy);
     sm.initialize("state1");
     try {
-      sm.event2();  
+      sm.emit("event2");  
     } catch (e) {
       done(); 
     }
@@ -98,7 +98,7 @@ describe("StateMachine", function () {
 
     sm.state("state1").on("event1", cb).on("event1", cb);
     sm.initialize("state1");
-    sm.event1();
+    sm.emit("event1");
   });
 
   it("should invoke the enter event when entering a state", function (done) {
@@ -106,7 +106,7 @@ describe("StateMachine", function () {
     sm.state("state1").on("event1", function () { this.go("state2"); });
     sm.state("state2").on("enter", done);
     sm.initialize("state1");
-    sm.event1();
+    sm.emit("event1");
   });
 
   it("should invoke the exit event when entering a state", function (done) {
@@ -115,7 +115,7 @@ describe("StateMachine", function () {
     sm.state("state1").on("exit", done);
     sm.state("state2").on("enter", function () {});
     sm.initialize("state1");
-    sm.event1();
+    sm.emit("event1");
   });
 
   it("should not invoke the enter event if the state didn't actually change", function () {
@@ -166,7 +166,7 @@ describe("StateMachine", function () {
       }
     })
     sm.initialize("state1");
-    sm.event1("foo", "bar");
+    sm.emit("event1", "foo", "bar");
   });
 
   it("should return the correct current state name", function () {
@@ -176,7 +176,7 @@ describe("StateMachine", function () {
     });
     sm.state("state2");
     sm.initialize("state1");
-    sm.event1();
+    sm.emit("event1");
     if (sm.current() !== "state2") {
       throw Error("incorrect state");
     }
@@ -187,11 +187,11 @@ describe("StateMachine", function () {
     sm.state("state1").on("event1", "state2");
     sm.state("state2").on("event1", "state1");
     sm.initialize("state1");
-    sm.event1();
+    sm.emit("event1");
     if (sm.current() !== "state2") {
       throw Error("incorrect state");
     }
-    sm.event1();
+    sm.emit("event1");
     if (sm.current() !== "state1") {
       throw Error("incorrect state");
     }
@@ -202,8 +202,8 @@ describe("StateMachine", function () {
     sm.state("state1").on("event1", "state2");
     sm.state("state2").on("event1", undefined);
     sm.initialize("state1");
-    sm.event1();
-    sm.event1();
+    sm.emit("event1");
+    sm.emit("event1");
     if (sm.current() !== "state2") {
       throw Error("incorrect state");
     }
@@ -231,7 +231,7 @@ describe("StateMachine", function () {
       });
 
     sm.initialize("state1");
-    sm.event1()
+    sm.emit("event1");
 
   });
 
@@ -253,7 +253,7 @@ describe("StateMachine", function () {
         });
 
       sm.initialize("state");
-      sm.event();
+      sm.emit("event");
 
     } catch (e) {
       wasRethrown = true;

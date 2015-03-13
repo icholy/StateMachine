@@ -17,13 +17,6 @@ declare module StateMachine {
          */
         constructor(sm: StateMachine, name: string);
         /**
-         * Create a function for invoking an event
-         *
-         * @param event - Event name
-         * @return Event method
-         */
-        private _makeEventMethod(event);
-        /**
          * Convert an event handler parameter to a function
          *
          * @param x Handler parameter
@@ -87,6 +80,13 @@ declare module StateMachine {
          * @return name Current state name
          */
         current(): string;
+        /**
+         * Emit an event
+         *
+         * @param event Event name
+         * @param args Arguments to pass to event handler
+         */
+        emit(event: string, ...args: Array<any>): void;
         /**
          * Go to another state
          *
