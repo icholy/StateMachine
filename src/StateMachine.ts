@@ -10,8 +10,9 @@ module StateMachine {
 
   export class State {
 
-    _sm:     StateMachine;
-    _name:   string;
+    name:   string;
+
+    private _sm:     StateMachine;
     _events: any;
     _enter:  Array<EventHandler>;
     _exit:   Array<EventHandler>;
@@ -25,7 +26,7 @@ module StateMachine {
      */
     constructor(sm: StateMachine, name: string) {
       this._sm     = sm;
-      this._name   = name;
+      this.name    = name;
       this._events = {};
       this._enter  = [];
       this._exit   = [];
@@ -166,7 +167,7 @@ module StateMachine {
         throw new Error(
             "the state machine has not been initialized");
       }
-      return current._name;
+      return current.name;
     }
 
     /**
@@ -189,18 +190,18 @@ module StateMachine {
       events = state._events;
       if (!events.hasOwnProperty(event)) {
         throw new Error(
-          event + " event not defined for " + state._name + " state"
+          event + " event not defined for " + state.name + " state"
         );
       }
       if (verbose) {
-        console.log(name + ": " + state._name + "." + event);
+        console.log(name + ": " + state.name + "." + event);
       }
       if (logEx) {
         try {
           events[event].forEach(
               (fn) => fn.apply(this, args))
         } catch (e) {
-          console.log(name + ": " + state._name + " ! " + e.message);
+          console.log(name + ": " + state.name + " ! " + e.message);
           throw e;
         }
       } else {
@@ -221,9 +222,9 @@ module StateMachine {
       if (isUndefined(state)) {
         throw new Error(name + " state does not exist");
       }
-      if (current._name !== name) {
+      if (current.name !== name) {
         if (this._options.verbose) {
-          console.log(this._options.name + ": " + current._name + " -> " + name);
+          console.log(this._options.name + ": " + current.name + " -> " + name);
         }
         current._exit.forEach(execute);
         this._current = state;

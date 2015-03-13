@@ -3,8 +3,8 @@ declare module StateMachine {
         (...any: any[]): any;
     }
     class State {
-        _sm: StateMachine;
-        _name: string;
+        name: string;
+        private _sm;
         _events: any;
         _enter: Array<EventHandler>;
         _exit: Array<EventHandler>;

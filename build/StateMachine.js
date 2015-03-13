@@ -15,7 +15,7 @@ var StateMachine;
          */
         function State(sm, name) {
             this._sm = sm;
-            this._name = name;
+            this.name = name;
             this._events = {};
             this._enter = [];
             this._exit = [];
@@ -139,7 +139,7 @@ var StateMachine;
             if (current === null) {
                 throw new Error("the state machine has not been initialized");
             }
-            return current._name;
+            return current.name;
         };
         /**
          * Emit an event
@@ -163,10 +163,10 @@ var StateMachine;
             }
             events = state._events;
             if (!events.hasOwnProperty(event)) {
-                throw new Error(event + " event not defined for " + state._name + " state");
+                throw new Error(event + " event not defined for " + state.name + " state");
             }
             if (verbose) {
-                console.log(name + ": " + state._name + "." + event);
+                console.log(name + ": " + state.name + "." + event);
             }
             if (logEx) {
                 try {
@@ -174,7 +174,7 @@ var StateMachine;
                         return fn.apply(_this, args);
                     });
                 } catch (e) {
-                    console.log(name + ": " + state._name + " ! " + e.message);
+                    console.log(name + ": " + state.name + " ! " + e.message);
                     throw e;
                 }
             } else {
@@ -198,9 +198,9 @@ var StateMachine;
             if (isUndefined(state)) {
                 throw new Error(name + " state does not exist");
             }
-            if (current._name !== name) {
+            if (current.name !== name) {
                 if (this._options.verbose) {
-                    console.log(this._options.name + ": " + current._name + " -> " + name);
+                    console.log(this._options.name + ": " + current.name + " -> " + name);
                 }
                 current._exit.forEach(execute);
                 this._current = state;
