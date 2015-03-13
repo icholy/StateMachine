@@ -1,4 +1,4 @@
-# StateMachine: [![Build Status](https://travis-ci.org/icholy/StateMachine.png?branch=master)](https://travis-ci.org/icholy/SSM)
+# StateMachine: [![Build Status](https://travis-ci.org/icholy/StateMachine.svg?branch=1.0.0)](https://travis-ci.org/icholy/StateMachine)
 
 > State Machine
 
