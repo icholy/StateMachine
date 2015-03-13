@@ -64,7 +64,7 @@ declare module StateMachine {
          * @param name Initial state name
          * @return State machine
          */
-        initialize(name: string): void;
+        init(name: string): void;
         /**
          * Creates or gets existing State
          *

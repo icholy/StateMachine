@@ -144,7 +144,7 @@ var StateMachine;
          * @param name Initial state name
          * @return State machine
          */
-        StateMachine.prototype.initialize = function (name) {
+        StateMachine.prototype.init = function (name) {
             var states = this._states;
             if (isUndefined(states[name])) {
                 throw new Error(name + " state is not defined");

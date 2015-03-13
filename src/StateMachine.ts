@@ -168,7 +168,7 @@ module StateMachine {
      * @param name Initial state name
      * @return State machine
      */
-    initialize(name: string) {
+    init(name: string) {
       var states = this._states;
       if (isUndefined(states[name])) {
         throw new Error(name + " state is not defined");

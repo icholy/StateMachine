@@ -27,7 +27,7 @@ describe("StateMachine", function () {
   it("should invoke the transition function", function (done) {
     var sm = new StateMachine.StateMachine();
     sm.state("state1").on("event1", done);
-    sm.initialize("state1");
+    sm.init("state1");
     sm.emit("event1");
   });
 
@@ -37,7 +37,7 @@ describe("StateMachine", function () {
       this.go("state2");
     });
     sm.state("state2").on("event1", done);
-    sm.initialize("state1");
+    sm.init("state1");
     sm.emit("event1");
     sm.emit("event1");
   });
@@ -45,7 +45,7 @@ describe("StateMachine", function () {
   it("should error if trying to transition to a non-existing state", function (done) {
     var sm = new StateMachine.StateMachine();
     sm.state("state1").on("event1", function () { this.go("non-existing-state"); });
-    sm.initialize("state1");
+    sm.init("state1");
     try {
       sm.emit("event1"); 
     } catch (e) {
@@ -67,7 +67,7 @@ describe("StateMachine", function () {
         dummy = function () {};
     sm.state("state1").on("event1", dummy);
     sm.state("state2").on("event2", dummy);
-    sm.initialize("state1");
+    sm.init("state1");
     try {
       sm.emit("event2");  
     } catch (e) {
@@ -78,7 +78,7 @@ describe("StateMachine", function () {
   it("should error if trying to initialize to a non-existing state", function (done) {
     var sm = new StateMachine.StateMachine();
     try {
-      sm.initialize("state1");
+      sm.init("state1");
     } catch (e) {
       done();
     }
@@ -97,7 +97,7 @@ describe("StateMachine", function () {
         cb    = function () { if (++count === 2) { done(); } };
 
     sm.state("state1").on("event1", cb).on("event1", cb);
-    sm.initialize("state1");
+    sm.init("state1");
     sm.emit("event1");
   });
 
@@ -105,7 +105,7 @@ describe("StateMachine", function () {
     var sm = new StateMachine.StateMachine();
     sm.state("state1").on("event1", function () { this.go("state2"); });
     sm.state("state2").on("enter", done);
-    sm.initialize("state1");
+    sm.init("state1");
     sm.emit("event1");
   });
 
@@ -114,7 +114,7 @@ describe("StateMachine", function () {
     sm.state("state1").on("event1", function () { this.go("state2"); });
     sm.state("state1").on("exit", done);
     sm.state("state2").on("enter", function () {});
-    sm.initialize("state1");
+    sm.init("state1");
     sm.emit("event1");
   });
 
@@ -123,7 +123,7 @@ describe("StateMachine", function () {
     sm.state("state1").on("enter", function () {
       throw Error("state did not change");
     });
-    sm.initialize("state1");
+    sm.init("state1");
     sm.go("state1");
   });
 
@@ -132,7 +132,7 @@ describe("StateMachine", function () {
     sm.state("state1").on("exit", function () {
       throw Error("state did not change");
     });
-    sm.initialize("state1");
+    sm.init("state1");
     sm.go("state1");
   });
 
@@ -142,7 +142,7 @@ describe("StateMachine", function () {
     var callCount = 0;
     sm.state("state1").on("enter", function () { ++callCount === 2 && done(); });
     sm.state("state1").on("enter", function () { ++callCount === 2 && done(); });
-    sm.initialize("state2");
+    sm.init("state2");
     sm.go("state1");
   });
 
@@ -152,7 +152,7 @@ describe("StateMachine", function () {
     var callCount = 0;
     sm.state("state1").on("exit", function () { ++callCount === 2 && done(); });
     sm.state("state1").on("exit", function () { ++callCount === 2 && done(); });
-    sm.initialize("state1");
+    sm.init("state1");
     sm.go("state2");
   });
 
@@ -165,7 +165,7 @@ describe("StateMachine", function () {
         done();
       }
     })
-    sm.initialize("state1");
+    sm.init("state1");
     sm.emit("event1", "foo", "bar");
   });
 
@@ -175,7 +175,7 @@ describe("StateMachine", function () {
       this.go("state2");
     });
     sm.state("state2");
-    sm.initialize("state1");
+    sm.init("state1");
     sm.emit("event1");
     if (sm.current.name !== "state2") {
       throw Error("incorrect state");
@@ -186,7 +186,7 @@ describe("StateMachine", function () {
     var sm = new StateMachine.StateMachine();
     sm.state("state1").on("event1", "state2");
     sm.state("state2").on("event1", "state1");
-    sm.initialize("state1");
+    sm.init("state1");
     sm.emit("event1");
     if (sm.current.name !== "state2") {
       throw Error("incorrect state");
@@ -201,7 +201,7 @@ describe("StateMachine", function () {
     var sm = new StateMachine.StateMachine();
     sm.state("state1").on("event1", "state2");
     sm.state("state2").on("event1", undefined);
-    sm.initialize("state1");
+    sm.init("state1");
     sm.emit("event1");
     sm.emit("event1");
     if (sm.current.name !== "state2") {
@@ -230,7 +230,7 @@ describe("StateMachine", function () {
         }
       });
 
-    sm.initialize("state1");
+    sm.init("state1");
     sm.emit("event1");
 
   });
@@ -252,7 +252,7 @@ describe("StateMachine", function () {
           throw Error(errMessage);
         });
 
-      sm.initialize("state");
+      sm.init("state");
       sm.emit("event");
 
     } catch (e) {

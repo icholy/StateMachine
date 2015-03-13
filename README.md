@@ -41,7 +41,7 @@ machine.state("state2")
   });
 
 // set initial state
-machine.initialize("state1");
+machine.init("state1");
 
 // invoke events
 machine.emit("event1");
