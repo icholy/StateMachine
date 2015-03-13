@@ -1,13 +1,16 @@
-# SSM: [![Build Status](https://travis-ci.org/icholy/SSM.png?branch=master)](https://travis-ci.org/icholy/SSM)
+# StateMachine: [![Build Status](https://travis-ci.org/icholy/StateMachine.png?branch=master)](https://travis-ci.org/icholy/SSM)
 
-> Simple State Machine 
+> State Machine
 
 **Usage:**
 
 ``` js
 
 // create instance
-var machine = new SSM({ verbose: true, name: "MyStateMachine" });
+var machine = new StateMachine.StateMachine({
+  verbose: true,
+  name:    "MyStateMachine"
+});
 
 // define states
 machine.state("state1")
@@ -41,12 +44,11 @@ machine.state("state2")
 machine.initialize("state1");
 
 // invoke events
-machine.event1();
-machine.event2("foo", "bar", "baz");
+machine.emit("event1");
+machine.emit("event2", "foo", "bar", "baz");
 
 //get current state name
 var name = machine.current();
 console.log(name);
 ```
 
-**Note:** the api is completely chainable
