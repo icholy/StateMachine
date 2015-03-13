@@ -61,7 +61,7 @@ declare module StateMachine {
         /**
          * @param options Options
          */
-        constructor(options: Options);
+        constructor(options?: Options);
         /**
          * Initializes the state machine to an initial state.
          * trying to invoke event methods before initializing
