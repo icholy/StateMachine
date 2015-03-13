@@ -48,7 +48,7 @@ machine.emit("event1");
 machine.emit("event2", "foo", "bar", "baz");
 
 //get current state name
-var name = machine.current();
+var name = machine.current.name
 console.log(name);
 ```
 
