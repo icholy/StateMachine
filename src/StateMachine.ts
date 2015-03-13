@@ -11,16 +11,15 @@ module StateMachine {
   export class State {
 
     name:   string;
+    _enter: Array<EventHandler>;
+    _exit:  Array<EventHandler>;
 
     private _sm:     StateMachine;
-    _events: any;
-    _enter:  Array<EventHandler>;
-    _exit:   Array<EventHandler>;
+    private _events: any;
 
     /**
-     * a single state
+     * A single state
      *
-     * @class State
      * @param sm - state machine
      * @param name - state name
      */
@@ -86,102 +85,12 @@ module StateMachine {
       return this;
     }
 
-  }
-
-  export interface Options {
-    name?:          string;
-    verbose?:       boolean;
-    logExceptions?: boolean;
-  }
-
-  export interface EventMethod {
-    (...any): any;
-  }
-
-  export class StateMachine {
-
-    _states:  { [name: string]: State };
-    _current: State;
-    _options: Options;
-
-    /**
-     * @param options Options
-     */
-    constructor(options: Options) {
-      this._states  = {};
-      this._current = null;
-
-      if (isUndefined(options)) {
-        options = {};
-      }
-      if (isUndefined(options.verbose)) {
-        options.verbose = false;
-      }
-      if (isUndefined(options.name)) {
-        options.name = "StateMachine";
-      }
-      if (isUndefined(options.logExceptions)) {
-        options.logExceptions = false;
-      }
-      this._options = options;
-    }
-
-    /**
-     * Initializes the state machine to an initial state.
-     * trying to invoke event methods before initializing
-     * will result in an `Error` being thrown
-     *
-     * @param name Initial state name
-     * @return State machine
-     */
-    initialize(name: string) {
-      var states = this._states;
-      if (isUndefined(states[name])) {
-        throw new Error(name + " state is not defined");
-      }
-      this._current = states[name];
-    }
-
-    /**
-     * Creates or gets existing State
-     *
-     * @param Name - state name
-     * @return State specified by name
-     */
-    state(name: string): State {
-      var states = this._states;
-      if (!states.hasOwnProperty(name)) {
-        states[name] = new State(this, name);
-      }
-      return states[name];
-    }
-
-    /**
-     * Gets the name of the current State
-     *
-     * @return name Current state name
-     */
-    current(): string {
-      var current = this._current;
-      if (current === null) {
-        throw new Error(
-            "the state machine has not been initialized");
-      }
-      return current.name;
-    }
-
-    /**
-     * Emit an event
-     *
-     * @param event Event name
-     * @param args Arguments to pass to event handler
-     */
     emit(event: string, ...args: Array<any>): void {
-
-      var verbose = this._options.verbose,
-          name    = this._options.name,
-          logEx   = this._options.logExceptions,
-          state   = this._current,
+      var sm      = this._sm,
+          verbose = sm.options.verbose,
+          name    = sm.options.name,
+          logEx   = sm.options.logExceptions,
+          state   = this,
           events;
 
       if (state === null) {
@@ -199,15 +108,100 @@ module StateMachine {
       if (logEx) {
         try {
           events[event].forEach(
-              (fn) => fn.apply(this, args))
+              (fn) => fn.apply(sm, args))
         } catch (e) {
           console.log(name + ": " + state.name + " ! " + e.message);
           throw e;
         }
       } else {
         events[event].forEach(
-            (fn) => fn.apply(this, args));
+            (fn) => fn.apply(sm, args));
       }
+    }
+
+  }
+
+  export interface Options {
+    name?:          string;
+    verbose?:       boolean;
+    logExceptions?: boolean;
+  }
+
+  export interface EventMethod {
+    (...any): any;
+  }
+
+  export class StateMachine {
+
+    private _states:  { [name: string]: State };
+
+    current: State;
+    options: Options;
+
+    /**
+     * @param options Options
+     */
+    constructor(options: Options) {
+      this._states  = {};
+      this.current = null;
+
+      if (isUndefined(options)) {
+        options = {};
+      }
+      if (isUndefined(options.verbose)) {
+        options.verbose = false;
+      }
+      if (isUndefined(options.name)) {
+        options.name = "StateMachine";
+      }
+      if (isUndefined(options.logExceptions)) {
+        options.logExceptions = false;
+      }
+      this.options = options;
+    }
+
+    /**
+     * Initializes the state machine to an initial state.
+     * trying to invoke event methods before initializing
+     * will result in an `Error` being thrown
+     *
+     * @param name Initial state name
+     * @return State machine
+     */
+    initialize(name: string) {
+      var states = this._states;
+      if (isUndefined(states[name])) {
+        throw new Error(name + " state is not defined");
+      }
+      this.current = states[name];
+    }
+
+    /**
+     * Creates or gets existing State
+     *
+     * @param Name - state name
+     * @return State specified by name
+     */
+    state(name: string): State {
+      var states = this._states;
+      if (!states.hasOwnProperty(name)) {
+        states[name] = new State(this, name);
+      }
+      return states[name];
+    }
+
+    /**
+     * Emit an event
+     *
+     * @param event Event name
+     * @param args Arguments to pass to event handler
+     */
+    emit(event: string, ...args: Array<any>): void {
+      var state = this.current;
+      if (state === null) {
+        throw new Error("the state machine has not been initialized");
+      }
+      state.emit.apply(state, arguments);
     }
 
     /**
@@ -217,17 +211,17 @@ module StateMachine {
      */
     go(name: string): void {
       var state   = this._states[name],
-          current = this._current,
+          current = this.current,
           execute = fn => fn.call(this);
       if (isUndefined(state)) {
         throw new Error(name + " state does not exist");
       }
       if (current.name !== name) {
-        if (this._options.verbose) {
-          console.log(this._options.name + ": " + current.name + " -> " + name);
+        if (this.options.verbose) {
+          console.log(this.options.name + ": " + current.name + " -> " + name);
         }
         current._exit.forEach(execute);
-        this._current = state;
+        this.current = state;
         state._enter.forEach(execute);
       }
     }

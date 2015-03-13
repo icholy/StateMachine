@@ -177,7 +177,7 @@ describe("StateMachine", function () {
     sm.state("state2");
     sm.initialize("state1");
     sm.emit("event1");
-    if (sm.current() !== "state2") {
+    if (sm.current.name !== "state2") {
       throw Error("incorrect state");
     }
   });
@@ -188,11 +188,11 @@ describe("StateMachine", function () {
     sm.state("state2").on("event1", "state1");
     sm.initialize("state1");
     sm.emit("event1");
-    if (sm.current() !== "state2") {
+    if (sm.current.name !== "state2") {
       throw Error("incorrect state");
     }
     sm.emit("event1");
-    if (sm.current() !== "state1") {
+    if (sm.current.name !== "state1") {
       throw Error("incorrect state");
     }
   });
@@ -204,7 +204,7 @@ describe("StateMachine", function () {
     sm.initialize("state1");
     sm.emit("event1");
     sm.emit("event1");
-    if (sm.current() !== "state2") {
+    if (sm.current.name !== "state2") {
       throw Error("incorrect state");
     }
   });

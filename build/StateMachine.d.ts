@@ -4,14 +4,13 @@ declare module StateMachine {
     }
     class State {
         name: string;
-        private _sm;
-        _events: any;
         _enter: Array<EventHandler>;
         _exit: Array<EventHandler>;
+        private _sm;
+        private _events;
         /**
-         * a single state
+         * A single state
          *
-         * @class State
          * @param sm - state machine
          * @param name - state name
          */
@@ -39,6 +38,7 @@ declare module StateMachine {
          * @return State
          */
         on(event: string, handler: EventHandler | string): State;
+        emit(event: string, ...args: Array<any>): void;
     }
     interface Options {
         name?: string;
@@ -49,11 +49,9 @@ declare module StateMachine {
         (...any: any[]): any;
     }
     class StateMachine {
-        _states: {
-            [name: string]: State;
-        };
-        _current: State;
-        _options: Options;
+        private _states;
+        current: State;
+        options: Options;
         /**
          * @param options Options
          */
@@ -74,12 +72,6 @@ declare module StateMachine {
          * @return State specified by name
          */
         state(name: string): State;
-        /**
-         * Gets the name of the current State
-         *
-         * @return name Current state name
-         */
-        current(): string;
         /**
          * Emit an event
          *
