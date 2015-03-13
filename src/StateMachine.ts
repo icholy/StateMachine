@@ -85,6 +85,12 @@ module StateMachine {
       return this;
     }
 
+    /**
+     * Emit an event
+     *
+     * @param event Event name
+     * @param args Arguments to pass to event handler
+     */
     emit(event: string, ...args: Array<any>): void {
       var sm      = this._sm,
           verbose = sm.options.verbose,
