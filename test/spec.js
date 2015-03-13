@@ -25,14 +25,14 @@ ConsoleLogStub.prototype.restore = function () {
 describe("StateMachine", function () {
 
   it("should invoke the transition function", function (done) {
-    var sm = new StateMachine();
+    var sm = new StateMachine.StateMachine();
     sm.state("state1").on("event1", done);
     sm.initialize("state1");
     sm.event1();
   });
 
   it("should correctly transition between states", function (done) {
-    var sm = new StateMachine();
+    var sm = new StateMachine.StateMachine();
     sm.state("state1").on("event1", function () {
       this.go("state2");
     });
@@ -43,7 +43,7 @@ describe("StateMachine", function () {
   });
 
   it("should error if trying to transition to a non-existing state", function (done) {
-    var sm = new StateMachine();
+    var sm = new StateMachine.StateMachine();
     sm.state("state1").on("event1", function () { this.go("non-existing-state"); });
     sm.initialize("state1");
     try {
@@ -54,7 +54,7 @@ describe("StateMachine", function () {
   });
 
   it("should error if trying to register a reserved api", function (done) {
-    var sm = new StateMachine();
+    var sm = new StateMachine.StateMachine();
     try {
       sm.state("foo").event("go"); 
     } catch (e) {
@@ -63,7 +63,7 @@ describe("StateMachine", function () {
   });
 
   it("should error if event is not defined on the current state", function (done) {
-    var sm   = new StateMachine(),
+    var sm   = new StateMachine.StateMachine(),
         dummy = function () {};
     sm.state("state1").on("event1", dummy);
     sm.state("state2").on("event2", dummy);
@@ -76,7 +76,7 @@ describe("StateMachine", function () {
   });
 
   it("should error if trying to initialize to a non-existing state", function (done) {
-    var sm = new StateMachine();
+    var sm = new StateMachine.StateMachine();
     try {
       sm.initialize("state1");
     } catch (e) {
@@ -85,7 +85,7 @@ describe("StateMachine", function () {
   });
 
   it("should not error if trying to redefine the same event on the same state", function () {
-    var sm   = new StateMachine(),
+    var sm   = new StateMachine.StateMachine(),
         dummy = function () {};
     sm.state("state1").on("event1", dummy);
     sm.state("state1").on("event1", dummy);
@@ -93,7 +93,7 @@ describe("StateMachine", function () {
 
   it("should work with multiple callbacks on the same event", function (done) {
     var count = 0,
-        sm   = new StateMachine(),
+        sm   = new StateMachine.StateMachine(),
         cb    = function () { if (++count === 2) { done(); } };
 
     sm.state("state1").on("event1", cb).on("event1", cb);
@@ -102,7 +102,7 @@ describe("StateMachine", function () {
   });
 
   it("should invoke the enter event when entering a state", function (done) {
-    var sm = new StateMachine();
+    var sm = new StateMachine.StateMachine();
     sm.state("state1").on("event1", function () { this.go("state2"); });
     sm.state("state2").on("enter", done);
     sm.initialize("state1");
@@ -110,7 +110,7 @@ describe("StateMachine", function () {
   });
 
   it("should invoke the exit event when entering a state", function (done) {
-    var sm = new StateMachine();
+    var sm = new StateMachine.StateMachine();
     sm.state("state1").on("event1", function () { this.go("state2"); });
     sm.state("state1").on("exit", done);
     sm.state("state2").on("enter", function () {});
@@ -119,7 +119,7 @@ describe("StateMachine", function () {
   });
 
   it("should not invoke the enter event if the state didn't actually change", function () {
-    var sm = new StateMachine();
+    var sm = new StateMachine.StateMachine();
     sm.state("state1").on("enter", function () {
       throw Error("state did not change");
     });
@@ -128,7 +128,7 @@ describe("StateMachine", function () {
   });
 
   it("should not invoke the exit event if the state didn't actually change", function () {
-    var sm = new StateMachine();
+    var sm = new StateMachine.StateMachine();
     sm.state("state1").on("exit", function () {
       throw Error("state did not change");
     });
@@ -137,7 +137,7 @@ describe("StateMachine", function () {
   });
 
   it("should work with multiple enter events", function (done) {
-    var sm = new StateMachine();
+    var sm = new StateMachine.StateMachine();
     sm.state("state2");
     var callCount = 0;
     sm.state("state1").on("enter", function () { ++callCount === 2 && done(); });
@@ -147,7 +147,7 @@ describe("StateMachine", function () {
   });
 
   it("should work with multiple exit events", function (done) {
-    var sm = new StateMachine();
+    var sm = new StateMachine.StateMachine();
     sm.state("state2");
     var callCount = 0;
     sm.state("state1").on("exit", function () { ++callCount === 2 && done(); });
@@ -156,22 +156,8 @@ describe("StateMachine", function () {
     sm.go("state2");
   });
 
-  it("should be chainable", function (done) {
-    var sm = new StateMachine()
-        .state("state1")
-          .on("event1", function () {
-            this.go("state2");
-          })
-          .on("exit", function () { })
-        .state("state2")
-          .on("enter", done)
-        .initialize("state1");
-
-    sm.event1();
-  });
-
   it("should recieve parameters from event invokations", function (done) {
-    var sm = new StateMachine();
+    var sm = new StateMachine.StateMachine();
     sm.state("state1").on("event1", function (arg1, arg2) {
       if (arg1 !== "foo" || arg2 !== "bar") {
         throw Error("parameters were not passed correctly");
@@ -184,7 +170,7 @@ describe("StateMachine", function () {
   });
 
   it("should return the correct current state name", function () {
-    var sm = new StateMachine();
+    var sm = new StateMachine.StateMachine();
     sm.state("state1").on("event1", function () {
       this.go("state2");
     });
@@ -197,7 +183,7 @@ describe("StateMachine", function () {
   });
 
   it("should work with the simple transition rules", function () {
-    var sm = new StateMachine();
+    var sm = new StateMachine.StateMachine();
     sm.state("state1").on("event1", "state2");
     sm.state("state2").on("event1", "state1");
     sm.initialize("state1");
@@ -212,7 +198,7 @@ describe("StateMachine", function () {
   });
 
   it("should allow a state event with no second parameter", function () {
-    var sm = new StateMachine();
+    var sm = new StateMachine.StateMachine();
     sm.state("state1").on("event1", "state2");
     sm.state("state2").on("event1", undefined);
     sm.initialize("state1");
@@ -224,7 +210,7 @@ describe("StateMachine", function () {
   });
 
   it("should provide the StateMachine instance as this in enter and exit", function () {
-    var sm = new StateMachine();
+    var sm = new StateMachine.StateMachine();
 
     sm.state("state1")
 
@@ -251,7 +237,7 @@ describe("StateMachine", function () {
 
   it("should log exceptions when the logExceptions option is set", function () {
 
-    var sm = new StateMachine({ logExceptions: true });
+    var sm = new StateMachine.StateMachine({ logExceptions: true });
 
     // stub the console
     var stub = new ConsoleLogStub();
